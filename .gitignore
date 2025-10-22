@@ -1,0 +1,71 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# LangSmith / LangChain
+.langchain/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS
+Thumbs.db
+
+# Claude Code MCP Configuration (contains API tokens)
+.mcp.json
