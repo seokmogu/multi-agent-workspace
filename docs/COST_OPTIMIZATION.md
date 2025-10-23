@@ -78,6 +78,195 @@ ALB + S3 = $50
 
 ---
 
+#### Phase 0 대안: 무료 티어 Redis 서비스 ($0/월) ⭐ NEW
+
+**개념**: 초기 PoC/개발 단계에서는 무료 SaaS Redis 서비스 활용
+
+무료 티어를 제공하는 주요 Redis 클라우드 서비스:
+
+##### 1. Upstash Redis (추천) ⭐⭐⭐
+
+```yaml
+스펙:
+  - Storage: 256 MB
+  - Commands: 500K/월
+  - Bandwidth: 10 GB/월
+  - Performance: 10K commands/sec
+  - Connections: 10,000 동시 연결
+  - Request Size: 최대 10MB
+  - Record Size: 최대 100MB
+
+특징:
+  - ✅ Serverless 아키텍처
+  - ✅ 글로벌 복제 지원
+  - ✅ REST API 제공
+  - ✅ 프로덕션 사용 가능
+  - ✅ 무제한 기간
+
+비용: $0/월 (영구 무료)
+```
+
+**사용 사례**: 프로토타입, 취미 프로젝트, 초기 MVP
+
+**통합 예시**:
+```python
+# coordinator/cache.py
+import os
+from upstash_redis import Redis
+
+redis_client = Redis(
+    url=os.getenv("UPSTASH_REDIS_REST_URL"),
+    token=os.getenv("UPSTASH_REDIS_REST_TOKEN")
+)
+
+# 사용법은 일반 Redis와 동일
+await redis_client.set("key", "value")
+result = await redis_client.get("key")
+```
+
+---
+
+##### 2. Redis Cloud (공식)
+
+```yaml
+스펙 (30MB Free Plan):
+  - Storage: 30 MB
+  - Connections: 30 동시 연결
+  - Bandwidth: 5 GB/월
+  - Throughput: 100 ops/sec
+  - CIDR Rules: 1개
+
+특징:
+  - ✅ 공식 Redis 서비스
+  - ✅ 학습 및 테스트 최적화
+  - ✅ 프로토타입 개발용
+  - ✅ 무제한 기간
+  - ⚠️ 프로덕션 사용 제한적
+
+비용: $0/월 (영구 무료)
+```
+
+**사용 사례**: Redis 학습, 간단한 테스트
+
+---
+
+##### 3. Aiven for Valkey
+
+```yaml
+스펙:
+  - RAM: 1 GB
+  - CPU: 1 vCPU
+  - Dedicated VM: 1개
+  - Cloud: AWS (선택 리전)
+  - Backups: 포함
+  - Monitoring: 성능 그래프 포함
+
+특징:
+  - ✅ 가장 큰 무료 리소스 (1GB RAM)
+  - ✅ 전용 VM 제공
+  - ✅ 자동 백업
+  - ✅ 모니터링 대시보드
+  - ✅ Terraform 지원
+  - ⚠️ 비활동 시 자동 종료
+
+비용: $0/월 (영구 무료, 활성 사용 시)
+```
+
+**사용 사례**: 개발/스테이징 환경, 소규모 프로덕션
+
+**주의사항**:
+- 장기간 미사용 시 자동 종료 (이메일 사전 통지)
+- 재시작 간단
+
+---
+
+##### 4. Render Redis
+
+```yaml
+스펙:
+  - Storage: 25 MB
+  - Connections: 제한 있음
+  - 특징: Zero DevOps
+
+비용: $0/월
+```
+
+**사용 사례**: Render 플랫폼 사용자
+
+---
+
+#### 무료 티어 비교표
+
+| 서비스 | 스토리지 | Commands/월 | Bandwidth | 추천도 |
+|--------|----------|-------------|-----------|--------|
+| **Upstash** ⭐ | 256 MB | 500K | 10 GB | ⭐⭐⭐ 최고 |
+| **Aiven** | 1 GB RAM | 무제한 | 포함 | ⭐⭐⭐ 개발용 최적 |
+| **Redis Cloud** | 30 MB | ~260K (100 ops/s) | 5 GB | ⭐⭐ 학습용 |
+| **Render** | 25 MB | - | - | ⭐ Render 사용자 |
+
+---
+
+#### Phase 0 최적화 비용 (무료 Redis 적용)
+
+**원래 구성**:
+```
+ECS Fargate: $258
+RDS: $13
+Redis: $13  ← ElastiCache
+NAT: $32
+ALB + S3: $50
+───────────
+총: $366/월
+```
+
+**무료 Redis 적용**:
+```
+ECS Fargate: $258
+RDS: $13
+Redis: $0  ← Upstash/Aiven 무료 티어
+NAT: $32
+ALB + S3: $50
+───────────
+총: $353/월 (4% 절감)
+```
+
+**추가 최적화** (VPC Endpoint + 무료 Redis):
+```
+ECS Fargate: $258
+RDS: $13
+Redis: $0  ← 무료 티어
+NAT: $0    ← VPC Endpoint로 대체
+ALB + S3: $50
+───────────
+총: $321/월 (12% 절감)
+```
+
+---
+
+#### 무료 Redis 사용 시 고려사항
+
+**장점** ✅:
+- 초기 비용 절감 ($13/월 → $0)
+- 빠른 시작 (설정 5분)
+- 관리 부담 없음
+- Phase 1 전환 전까지 충분
+
+**제약사항** ⚠️:
+- 스토리지 제한 (30-256 MB)
+- 처리량 제한 (100-10K ops/sec)
+- 프로덕션 확장 시 유료 전환 필요
+
+**권장 마이그레이션 경로**:
+```
+Phase 0: Upstash 무료 (256MB)
+    ↓ (트래픽 증가)
+Phase 1: ElastiCache t3.small ($28/월)
+    ↓ (대규모 처리)
+Phase 2+: ElastiCache t3.medium+ ($50+/월)
+```
+
+---
+
 #### Phase 1: 스타트업 환경 ($500-800/월)
 
 ```yaml

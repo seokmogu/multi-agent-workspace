@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # Research Agent - Independent HTTP Service
+  research-agent:
+    build:
+      context: .
+      dockerfile: src/agents/a2a/research_agent/Dockerfile
+    container_name: research-agent
+    ports:
+      - "5001:5001"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - PYTHONPATH=/workspace
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: python -m uvicorn src.agents.a2a.research_agent.app:app --host 0.0.0.0 --port 5001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - a2a-network
+
+  # Extraction Agent - Independent HTTP Service
+  extraction-agent:
+    build:
+      context: .
+      dockerfile: src/agents/a2a/extraction_agent/Dockerfile
+    container_name: extraction-agent
+    ports:
+      - "5002:5002"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PYTHONPATH=/workspace
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: python -m uvicorn src.agents.a2a.extraction_agent.app:app --host 0.0.0.0 --port 5002
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - a2a-network
+
+  # Coordinator - Orchestrates the workflow
+  coordinator:
+    build:
+      context: .
+      dockerfile: src/agents/a2a/coordinator/Dockerfile
+    container_name: coordinator
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - PYTHONPATH=/workspace
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: python -m uvicorn src.agents.a2a.coordinator.app:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - research-agent
+      - extraction-agent
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - a2a-network
+
+networks:
+  a2a-network:
+    driver: bridge

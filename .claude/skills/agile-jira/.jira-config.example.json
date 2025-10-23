@@ -1,0 +1,6 @@
+{
+  "baseUrl": "https://nexusprj.atlassian.net",
+  "email": "seokmogu@gmail.com",
+  "apiToken": "YOUR_JIRA_API_TOKEN_HERE",
+  "projectKey": "KAN"
+}

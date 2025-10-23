@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Multi-Agent Workspace 개발 환경
+  workspace:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: multi-agent-workspace
+    volumes:
+      # 소스 코드 마운트 (개발 중 변경사항 반영)
+      - .:/workspace
+      # Python 패키지 캐시 (빌드 속도 향상)
+      - pip-cache:/root/.cache/pip
+    environment:
+      # 환경 변수 (.env 파일에서 로드)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - JIRA_BASE_URL=${JIRA_BASE_URL}
+      - JIRA_EMAIL=${JIRA_EMAIL}
+      - JIRA_API_TOKEN=${JIRA_API_TOKEN}
+      - JIRA_PROJECT_KEY=${JIRA_PROJECT_KEY}
+    working_dir: /workspace
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+volumes:
+  pip-cache:

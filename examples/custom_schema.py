@@ -6,7 +6,7 @@ import json
 import asyncio
 from dotenv import load_dotenv
 
-from src.agent import Configuration, build_research_graph
+from src.agents.company_research import Configuration, build_research_graph
 
 load_dotenv()
 

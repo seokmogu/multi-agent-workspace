@@ -6,7 +6,7 @@ import json
 import asyncio
 from dotenv import load_dotenv
 
-from src.agent import Configuration, DEFAULT_SCHEMA, build_research_graph
+from src.agents.company_research import Configuration, DEFAULT_SCHEMA, build_research_graph
 
 # Load environment variables
 load_dotenv()

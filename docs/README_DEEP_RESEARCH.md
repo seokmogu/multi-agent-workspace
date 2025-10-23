@@ -179,7 +179,7 @@ company-search-agent/
 ├── .claude/
 │   └── skills/
 │       ├── langgraph-multi-agent/    # 기본 멀티에이전트 스킬
-│       └── company-deep-research/    # 딥리서치 스킬
+│       └── deep-research/            # 딥리서치 스킬
 │
 └── requirements.txt
 ```
@@ -313,7 +313,7 @@ async for event in graph.astream(initial_state):
 기본적인 멀티에이전트 시스템 구축 방법을 제공합니다.
 
 ### 2. 딥리서치 스킬
-`.claude/skills/company-deep-research/`
+`.claude/skills/deep-research/`
 
 웹 검색 기반 자동 리서치 시스템 구축 방법을 제공합니다.
 
@@ -322,7 +322,7 @@ async for event in graph.astream(initial_state):
 Claude Code에서 자동으로 인식합니다. 다음과 같이 요청하면:
 
 - "LangGraph로 멀티에이전트 시스템 만들어줘" → 기본 스킬 활성화
-- "회사 정보를 웹에서 자동으로 조사하는 에이전트 만들어줘" → 딥리서치 스킬 활성화
+- "웹에서 자동으로 정보를 조사하는 에이전트 만들어줘" → 딥리서치 스킬 활성화
 
 ## 비용 최적화
 

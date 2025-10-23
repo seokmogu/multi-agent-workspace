@@ -454,7 +454,7 @@ company-search-agent-adk/          # 별도 디렉토리
 - Reflection loop (품질 평가)
 - Custom schema support
 - PostgreSQL 통합 (캐싱)
-- Langfuse observability
+- CloudWatch monitoring
 
 **타임라인**: 2-4주
 

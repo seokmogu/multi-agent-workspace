@@ -6,7 +6,7 @@ allowed-tools: Write, Edit, Read, Bash
 
 # LangGraph Multi-Agent System
 
-This skill helps you create a production-ready multi-agent system using LangGraph, where multiple specialized agents collaborate to complete complex tasks.
+Build production-ready multi-agent systems using LangGraph where specialized agents collaborate to complete complex tasks.
 
 ## When to Use This Skill
 
@@ -17,16 +17,90 @@ This skill helps you create a production-ready multi-agent system using LangGrap
 
 ## 🎯 Target Use Case
 
-This multi-agent system is designed for analyzing **small to mid-sized private companies** where:
-- Company data comes from provided sources (not web search)
-- Sequential analysis → writing → review workflow is needed
-- Quality control through peer review is important
+Multi-agent systems for structured workflows where:
+- Sequential analysis → writing → review is needed
+- Quality control through iterative refinement is important
+- Conditional routing based on quality metrics is required
 
-> 💡 For **automated web research** of private companies, see the `Company Deep Research Agent` skill instead.
+> 💡 For **automated web research** of private companies, see the `company-deep-research` skill instead.
 
-## Architecture Overview
+## Quick Start
 
-The multi-agent system follows this pattern:
+### 1. Install Dependencies
+
+```bash
+pip install langgraph langchain-openai langchain-anthropic python-dotenv
+```
+
+### 2. Set API Key
+
+```bash
+export OPENAI_API_KEY=sk-...
+# or
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### 3. Basic Example
+
+```python
+from langgraph.graph import StateGraph, END
+from langchain_openai import ChatOpenAI
+from typing import TypedDict, Literal
+
+# Define state
+class AgentState(TypedDict):
+    topic: str
+    research: str
+    draft: str
+    quality_score: int
+    iteration_count: int
+
+# Create agents
+def research_node(state):
+    llm = ChatOpenAI(model="gpt-4")
+    result = llm.invoke(f"Research: {state['topic']}")
+    return {"research": result.content}
+
+def write_node(state):
+    llm = ChatOpenAI(model="gpt-4")
+    result = llm.invoke(f"Write based on: {state['research']}")
+    return {"draft": result.content}
+
+def review_node(state):
+    llm = ChatOpenAI(model="gpt-4")
+    # Review and score quality...
+    return {
+        "quality_score": 8,
+        "iteration_count": state.get("iteration_count", 0) + 1
+    }
+
+# Routing logic
+def should_continue(state) -> Literal["write", "end"]:
+    if state.get("quality_score", 0) >= 8:
+        return "end"
+    if state.get("iteration_count", 0) >= 3:
+        return "end"
+    return "write"
+
+# Build graph
+workflow = StateGraph(AgentState)
+workflow.add_node("research", research_node)
+workflow.add_node("write", write_node)
+workflow.add_node("review", review_node)
+
+workflow.set_entry_point("research")
+workflow.add_edge("research", "write")
+workflow.add_edge("write", "review")
+workflow.add_conditional_edges("review", should_continue, {"write": "write", "end": END})
+
+graph = workflow.compile()
+
+# Run
+result = graph.invoke({"topic": "AI Agents", "iteration_count": 0})
+print(result["draft"])
+```
+
+## Core Architecture
 
 ```
 Researcher Agent → Writer Agent → Reviewer Agent
@@ -35,260 +109,65 @@ Researcher Agent → Writer Agent → Reviewer Agent
                      (loop back if revision needed)
 ```
 
-## Implementation Steps
-
-### 1. Project Structure
-
-Create the following directory structure (this matches the company-search-agent implementation):
-
-```
-company-search-agent/
-├── agents/                 # Agent implementations
-│   ├── __init__.py
-│   ├── base_agent.py      # BaseAgent abstract class
-│   ├── researcher.py      # ResearcherAgent
-│   ├── writer.py          # WriterAgent
-│   └── reviewer.py        # ReviewerAgent
-│
-├── utils/                  # Utilities
-│   ├── __init__.py
-│   └── state.py           # AgentState, CompanySearchState
-│
-├── multi_agent_graph.py   # MultiAgentGraph class
-│
-├── examples/               # Usage examples
-│   ├── basic_example.py
-│   └── advanced_example.py  # With Human-in-the-loop
-│
-├── requirements.txt        # Dependencies
-└── .env                   # API keys
-```
-
-**Reference Implementation**: See `company-search-agent/` folder for complete working code.
-
-### 2. Core Components
-
-#### Base Agent Class
-
-Create an abstract base class that all agents inherit from:
-
-```python
-from abc import ABC, abstractmethod
-from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import AIMessage
-
-class BaseAgent(ABC):
-    def __init__(self, llm: BaseChatModel, name: str):
-        self.llm = llm
-        self.name = name
-
-    @abstractmethod
-    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        pass
-```
-
-#### State Management
-
-Define typed state using TypedDict:
-
-```python
-from typing import TypedDict, Annotated, List
-from langgraph.graph import add_messages
-from langchain_core.messages import BaseMessage
-
-class AgentState(TypedDict):
-    messages: Annotated[List[BaseMessage], add_messages]
-    next_agent: str
-    # Add domain-specific fields
-```
-
-#### Graph Building
-
-Use StateGraph to orchestrate agents:
-
-```python
-from langgraph.graph import StateGraph, END
-
-workflow = StateGraph(AgentState)
-
-# Add nodes
-workflow.add_node("researcher", researcher_node)
-workflow.add_node("writer", writer_node)
-workflow.add_node("reviewer", reviewer_node)
-
-# Define edges
-workflow.set_entry_point("researcher")
-workflow.add_edge("researcher", "writer")
-workflow.add_edge("writer", "reviewer")
-
-# Conditional routing
-workflow.add_conditional_edges(
-    "reviewer",
-    should_continue,
-    {"writer": "writer", "end": END}
-)
-
-graph = workflow.compile()
-```
-
-### 3. Agent Implementation Pattern
-
-Each agent should:
-
-1. **Receive state** with previous agent outputs
-2. **Execute its task** using LLM and tools
-3. **Update state** with results
-4. **Specify next agent** in the workflow
-
-Example:
-
-```python
-class ResearcherAgent(BaseAgent):
-    def execute(self, state):
-        # Get input from state
-        topic = state.get("topic")
-
-        # Perform research
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a researcher..."),
-            ("human", "{topic}")
-        ])
-
-        chain = prompt | self.llm
-        response = chain.invoke({"topic": topic})
-
-        # Update state
-        return {
-            "research_results": response.content,
-            "next_agent": "writer"
-        }
-```
-
-### 4. Advanced Features
-
-#### Checkpointing
-
-Add state persistence:
-
-```python
-from langgraph.checkpoint.memory import MemorySaver
-
-memory = MemorySaver()
-graph = workflow.compile(checkpointer=memory)
-
-# Use with thread ID
-config = {"configurable": {"thread_id": "session-1"}}
-graph.invoke(initial_state, config=config)
-```
-
-#### Human-in-the-Loop
-
-Add human review checkpoints:
-
-```python
-def human_review_node(state):
-    print(state["current_output"])
-    approval = input("Approve? (yes/no): ")
-
-    if approval == "yes":
-        return {"next_agent": "next_step"}
-    else:
-        return {"next_agent": "previous_step"}
-```
-
-#### Streaming
-
-Stream execution for real-time updates:
-
-```python
-for state_update in graph.stream(initial_state):
-    print(f"Agent update: {state_update}")
-```
-
-### 5. Dependencies
-
-Add to requirements.txt:
-
-```
-langgraph>=0.2.0
-langchain>=0.3.0
-langchain-openai>=0.2.0
-langchain-anthropic>=0.2.0
-python-dotenv>=1.0.0
-```
-
-### 6. Environment Setup
-
-Create .env file:
-
-```bash
-OPENAI_API_KEY=your_key
-# or
-ANTHROPIC_API_KEY=your_key
-```
-
-## Best Practices
-
-1. **Single Responsibility**: Each agent should have one clear purpose
-2. **Typed State**: Use TypedDict for type safety
-3. **Clear Routing**: Make conditional edges explicit and predictable
-4. **Error Handling**: Add try-catch blocks in agent execute methods
-5. **Logging**: Log agent transitions and decisions
-6. **Testing**: Test each agent independently before integration
+**Key Components**:
+- **State**: TypedDict defining shared data
+- **Nodes**: Agent functions that process state
+- **Edges**: Transitions between agents
+- **Routing**: Conditional logic for branching/looping
 
 ## Common Patterns
 
-### Sequential Processing
+1. **Sequential**: A → B → C → END
+2. **Conditional**: A → [Decision] → B or C → END
+3. **Iterative**: A → B → [Review] → A (loop) or END
+4. **Parallel**: A → [B, C, D] → Merge → END
 
-```
-Agent A → Agent B → Agent C → END
-```
+See [AGENT_PATTERNS.md](./references/AGENT_PATTERNS.md) for detailed examples.
 
-### Conditional Branching
+## Advanced Features
 
-```
-Agent A → [Decision] → Agent B or Agent C → END
-```
+- **Checkpointing**: Save/resume workflow state
+- **Streaming**: Real-time progress updates
+- **Human-in-the-Loop**: Manual approval checkpoints
+- **Parallel Processing**: Concurrent agent execution
 
-### Iterative Refinement
+See [ARCHITECTURE.md](./references/ARCHITECTURE.md) for implementation details.
 
-```
-Agent A → Agent B → [Review] → Agent A (loop) or END
-```
+## Best Practices
 
-### Parallel Processing
-
-Use subgraphs for parallel agent execution.
-
-## Example Usage
-
-```python
-from multi_agent_graph import MultiAgentGraph
-
-# Initialize
-agent_graph = MultiAgentGraph(
-    llm_provider="openai",
-    model="gpt-4",
-    temperature=0.7
-)
-
-# Run workflow
-result = agent_graph.run(
-    task="Analyze this company...",
-    data=input_data
-)
-
-print(result["final_output"])
-```
+1. ✅ **Single Responsibility**: Each agent has one clear purpose
+2. ✅ **Type Safety**: Use TypedDict for all state definitions
+3. ✅ **Termination Conditions**: Always check iteration limits in loops
+4. ✅ **Error Handling**: Wrap LLM calls in try-except blocks
+5. ✅ **Clear Routing**: Make conditional logic explicit and testable
 
 ## Troubleshooting
 
-- **Infinite loops**: Add max_iterations counter in state
-- **Missing state keys**: Validate state schema at each node
-- **LLM errors**: Implement retry logic with exponential backoff
-- **Memory issues**: Clear old messages from state periodically
+| Issue | Solution |
+|-------|----------|
+| **Infinite loops** | Add max_iterations counter in state |
+| **Missing state keys** | Use `.get()` with defaults |
+| **LLM rate limits** | Implement retry with exponential backoff |
+| **Memory issues** | Clear old messages periodically |
 
-## References
+## Reference Documentation
 
-- LangGraph Docs: https://langchain-ai.github.io/langgraph/
-- Multi-agent Examples: https://github.com/langchain-ai/langgraph/tree/main/examples/multi_agent
+Comprehensive guides in `references/` directory:
+
+- **[ARCHITECTURE.md](./references/ARCHITECTURE.md)** - System design, state management, graph structure
+- **[AGENT_PATTERNS.md](./references/AGENT_PATTERNS.md)** - Sequential, conditional, iterative, parallel patterns
+- **[IMPLEMENTATION.md](./references/IMPLEMENTATION.md)** - Step-by-step setup guide
+- **[EXAMPLES.md](./references/EXAMPLES.md)** - 6 working code examples
+
+## Official Resources
+
+- **LangGraph Docs**: https://langchain-ai.github.io/langgraph/
+- **Multi-agent Examples**: https://github.com/langchain-ai/langgraph/tree/main/examples/multi_agent
+- **Tutorials**: https://langchain-ai.github.io/langgraph/tutorials/
+
+---
+
+**Next Steps**:
+1. Read [IMPLEMENTATION.md](./references/IMPLEMENTATION.md) for detailed setup
+2. Try examples in [EXAMPLES.md](./references/EXAMPLES.md)
+3. Learn patterns in [AGENT_PATTERNS.md](./references/AGENT_PATTERNS.md)

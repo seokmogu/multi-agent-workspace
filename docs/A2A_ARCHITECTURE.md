@@ -144,9 +144,9 @@
 │                   Shared Infrastructure                      │
 │                                                              │
 │  ┌──────────────┐  ┌──────────┐  ┌────────┐  ┌──────────┐ │
-│  │ PostgreSQL   │  │  Redis   │  │   S3   │  │ Langfuse │ │
-│  │ (Primary +   │  │ (Cache + │  │ (Raw   │  │ (Observ- │ │
-│  │  Replica)    │  │  Queue)  │  │  Data) │  │  ability)│ │
+│  │ PostgreSQL   │  │  Redis   │  │   S3   │  │CloudWatch│ │
+│  │ (Primary +   │  │ (Cache + │  │ (Raw   │  │ (Logging │ │
+│  │  Replica)    │  │  Queue)  │  │  Data) │  │ Metrics) │ │
 │  └──────────────┘  └──────────┘  └────────┘  └──────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```

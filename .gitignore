@@ -69,3 +69,14 @@ Thumbs.db
 
 # Claude Code MCP Configuration (contains API tokens)
 .mcp.json
+
+# Jira Configuration (contains API tokens)
+.claude/skills/agile-jira/.jira-config.json
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Generated documents (workspace artifacts)
+docs/prd/
+docs/stories/

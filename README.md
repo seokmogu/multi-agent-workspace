@@ -1,176 +1,73 @@
-# Company Search Agent
+# Multi-Agent Workspace
 
-> LangGraph 기반 프로덕션 수준의 기업 리서치 자동화 시스템
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-**버전**: 2.0.0 - Production Ready
-**아키텍처**: Research-Extraction-Reflection Loop
-**특화**: 비상장 중소·중견 기업 리서치
+> LangGraph 기반 멀티 에이전트 개발을 위한 완전한 워크스페이스
 
----
-
-## 🎯 프로젝트 개요
-
-**자동 웹 검색**과 **Schema-driven 데이터 추출**을 통해 비상장 중소기업에 대한 구조화된 정보를 수집하는 시스템입니다.
-
-### 핵심 기능
-
-- 🔍 **멀티 검색 제공자**: Tavily / Google ADK / 하이브리드 (비용 최적화)
-- 📊 **구조화된 추출**: 사용자 정의 JSON 스키마 기반
-- 🔄 **품질 보장**: Reflection 루프로 자동 개선
-- 🎯 **간접 소스 전략**: 공시자료, VC 포트폴리오, 정부 발주 등
-- ⚡ **프로덕션 안정성**: Rate Limiting, 토큰 제한, 중복 제거
-- 💰 **비용 최적화**: 하이브리드 전략으로 50% 비용 절감
-
-### 아키텍처
-
-```
-┌──────────────┐
-│ Research     │  → 쿼리 생성 + 웹 검색 + 노트 작성
-└──────┬───────┘
-       ↓
-┌──────────────┐
-│ Extraction   │  → JSON 데이터 추출
-└──────┬───────┘
-       ↓
-┌──────────────┐
-│ Reflection   │  → 품질 평가 + 완성도 체크
-└──────┬───────┘
-       │
-   ┌───┴────┐
-   ↓        ↓
-완료됨    반복 필요 → Research로
-```
+**용도**: LangGraph/Google ADK 멀티 에이전트 시스템 개발
+**대상**: Claude Code vibe coding 개발자
+**철학**: 공식 레퍼런스 + 재사용 가능한 스킬 + 예제 에이전트
 
 ---
 
-## 🎯 타겟 기업
+## 🎯 이 워크스페이스는 무엇인가요?
 
-**중소·중견 비상장 기업** 특화:
+**Multi-Agent Workspace**는 Claude Code로 멀티 에이전트 시스템을 빠르게 개발할 수 있도록 설계된 프로젝트 템플릿입니다.
 
-| 특성 | 설명 |
-|------|------|
-| **기업 규모** | 중소기업 ~ 중견기업 |
-| **상장 여부** | 비상장사 (Private Company) |
-| **직접 소스** | 회사 웹사이트, 뉴스, 채용공고 |
-| **간접 소스** ⭐ | 상장사 공시(거래처), VC 포트폴리오, 정부 발주 |
-| **데이터 특성** | 비정형 데이터, 제한적 공개 정보 |
+### 핵심 구성 요소
 
-> 💡 **핵심 전략**: 비상장사는 직접 공시 안 하지만, 상장사 공시에서 주요 거래처로 언급됨을 활용
+1. **🤖 Claude Code 스킬 컬렉션** (9개)
+   - Agile 워크플로우 자동화
+   - 멀티 에이전트 시스템 구축
+   - 기업 리서치 자동화
+   - 브라우저 자동화 테스트
+   - 모니터링 & 데이터베이스
+
+2. **📚 공식 레퍼런스 문서** (`.claude/references/`)
+   - Google ADK 전체 가이드 (llms.txt, llms-full.txt)
+   - LangGraph 멀티 에이전트 아키텍처
+   - Claude가 직접 참조하는 LLM 최적화 문서
+
+3. **📦 예제 에이전트 구현**
+   - Company Research Agent (Research-Extraction-Reflection)
+   - 추가 예제 추가 예정
 
 ---
 
 ## 🚀 빠른 시작
 
-### 1. 설치
+### 1. 환경 설정
 
 ```bash
-# 의존성 설치
+# Python 의존성 설치
 pip install -r requirements.txt
 
-# 환경 변수 설정
+# 환경 변수 설정 (필요시)
 cp .env.example .env
 ```
 
-### 2. API 키 설정
-
-`.env` 파일 편집:
-```
-ANTHROPIC_API_KEY=your_anthropic_key
-TAVILY_API_KEY=your_tavily_key
-```
-
-### 3. 실행
+### 2. Claude Code 스킬 사용
 
 ```bash
-# 기본 예제 (Tavily 검색)
-python examples/basic_research.py
+# Agile 워크플로우
+/skill agile-product "새 기능 아이디어"
+/skill agile-stories --prd=docs/prd/feature.md
+/skill agile-jira --import docs/stories/
 
-# 커스텀 스키마
-python examples/custom_schema.py
+# 멀티 에이전트 시스템 구축
+/skill langgraph-multi-agent
 
-# 스트리밍
-python examples/streaming_example.py
-
-# Google ADK 무료 검색
-python examples/google_adk_example.py
-
-# 하이브리드 검색 (비용 최적화)
-python examples/hybrid_search_example.py
+# 딥 리서치 자동화
+/skill deep-research
 ```
 
----
+### 3. 레퍼런스 참조
 
-## 💡 사용 예시
-
-### 기본 사용
-
-```python
-import asyncio
-from src.agent.graph import build_research_graph
-from src.agent.configuration import Configuration
-from src.agent.state import DEFAULT_SCHEMA
-
-async def main():
-    # 설정
-    config = Configuration(
-        max_search_queries=3,
-        max_reflection_steps=1
-    )
-
-    # 그래프 생성
-    graph = build_research_graph(config)
-
-    # 실행
-    result = await graph.ainvoke({
-        "company_name": "Anthropic",
-        "extraction_schema": DEFAULT_SCHEMA,
-        "user_context": "",
-        "research_queries": [],
-        "search_results": [],
-        "research_notes": "",
-        "extracted_data": {},
-        "reflection_count": 0,
-        "missing_fields": [],
-        "follow_up_queries": [],
-        "is_complete": False,
-        "messages": []
-    })
-
-    print(result["extracted_data"])
-
-asyncio.run(main())
+Claude Code에게 명시적으로 요청:
 ```
-
-### 커스텀 스키마
-
-```python
-startup_schema = {
-    "type": "object",
-    "properties": {
-        "company_name": {"type": "string"},
-        "founded": {"type": "string"},
-        "founders": {
-            "type": "array",
-            "items": {"type": "string"}
-        },
-        "funding_rounds": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "round": {"type": "string"},
-                    "amount": {"type": "string"},
-                    "date": {"type": "string"}
-                }
-            }
-        },
-        "investors": {
-            "type": "array",
-            "items": {"type": "string"}
-        }
-    },
-    "required": ["company_name"]
-}
+"langgraph-multi-agent.md 참고해서 Supervisor 패턴으로 구현해줘"
+"google-adk-llms.txt에서 Tool 정의 방법 찾아서 적용해줘"
 ```
 
 ---
@@ -178,164 +75,482 @@ startup_schema = {
 ## 📁 프로젝트 구조
 
 ```
-company-search-agent/
-├── src/agent/              # 코어 시스템
-│   ├── configuration.py    # 설정
-│   ├── state.py           # 상태 관리
-│   ├── prompts.py         # ⭐ 프롬프트 템플릿
-│   ├── utils.py           # ⭐ 유틸리티 (중복 제거, 토큰 제한)
-│   ├── llm.py             # ⭐ LLM + Rate Limiter
-│   ├── research.py        # Research Phase
-│   ├── extraction.py      # Extraction Phase
-│   ├── reflection.py      # Reflection Phase
-│   └── graph.py           # 워크플로우
+multi-agent-workspace/
+├── .claude/                        # Claude Code 전용
+│   ├── skills/                     # 🤖 Claude Code 스킬 (7개)
+│   │   ├── agile-product/          # PRD 작성
+│   │   ├── agile-stories/          # User Story 생성
+│   │   ├── agile-jira/             # Jira 통합
+│   │   ├── langgraph-multi-agent/  # 멀티 에이전트 시스템
+│   │   ├── deep-research/          # 웹 딥리서치 (8개 검색 API)
+│   │   ├── database-designer/      # DB 설계 & 선택 (15개 DB 비교)
+│   │   ├── playwright-skill/       # 브라우저 자동화
+│   │   └── skill-creator/          # 스킬 제작 가이드
+│   │
+│   ├── references/                 # 📚 공식 레퍼런스 (LLM 최적화)
+│   │   ├── README.md              # 레퍼런스 가이드
+│   │   ├── google-adk-llms.txt    # Google ADK 요약 (40KB)
+│   │   ├── google-adk-llms-full.txt # Google ADK 전체 (3.1MB)
+│   │   ├── langgraph-README.md
+│   │   ├── langgraph-multi-agent.md # ⭐ 필수
+│   │   ├── langgraph-agentic-concepts.md
+│   │   └── langgraph-concepts-low-level.md
+│   │
+│   ├── AGILE_SKILLS_V2.md         # Agile 워크플로우 가이드
+│   └── SKILLS_COLLECTION.md       # 전체 스킬 컬렉션 문서
 │
-├── examples/              # 사용 예제
+├── src/                            # 에이전트 구현 (예제)
+│   └── agent/                      # Company Research Agent
+│       ├── graph.py
+│       ├── state.py
+│       ├── prompts.py
+│       └── ...
+│
+├── examples/                       # 사용 예제
 │   ├── basic_research.py
 │   ├── custom_schema.py
 │   └── streaming_example.py
 │
-├── docs/                  # 📚 문서
-│   ├── CLAUDE.md                    # 구현 상세 문서
-│   ├── PROJECT_SUMMARY.md           # 프로젝트 요약
-│   ├── COMPARISON_ANALYSIS.md       # company-researcher 비교
-│   ├── IMPROVEMENTS_APPLIED.md      # 개선사항 요약
-│   ├── README_DEEP_RESEARCH.md      # 상세 가이드
-│   └── LLM_CLOUD_PRICING_2025.md    # LLM 가격 비교
+├── docs/                           # 📚 개발 문서 (Company Research 관련)
 │
-├── .claude/skills/        # Claude Code 스킬
-├── requirements.txt       # 의존성
-├── .env                  # API 키 (git 제외)
-└── README.md             # 이 파일
+├── requirements.txt                # Python 의존성
+└── README.md                       # 이 파일
 ```
 
 ---
 
-## ⚡ v2.0.0 주요 개선사항
+## 🤖 포함된 Claude Code 스킬
 
-### 프로덕션 안정성 ⭐
-- ✅ **Rate Limiting**: API 제한 보호 (0.8 req/sec)
-- ✅ **토큰 제한**: 컨텍스트 오버플로우 방지 (1,000 tokens/source)
-- ✅ **URL 중복 제거**: 불필요한 API 호출 방지
+### Agile 워크플로우 자동화
 
-### 코드 품질 ⭐
-- ✅ **프롬프트 중앙화**: `prompts.py` (4개 템플릿)
-- ✅ **유틸리티 분리**: `utils.py` (8개 함수)
-- ✅ **LLM 통합**: `llm.py` (작업별 최적화)
+| 스킬 | 역할 | 사용 시점 |
+|------|------|----------|
+| **agile-product** | PM - PRD 작성 | 새 기능 기획 시작 |
+| **agile-stories** | PO - User Story 생성 | PRD → 구현 스토리 변환 |
+| **agile-jira** | Dev - Jira 티켓 생성 | 스토리 → Jira 업로드 (REST API) |
 
-### 비용 최적화 ⭐ NEW
-- ✅ **멀티 검색 제공자**: Tavily / Google ADK / 하이브리드
-- ✅ **Google ADK 통합**: 무료 웹 검색 (langchain-google-genai)
-- ✅ **하이브리드 전략**: 품질 + 비용 균형 (50% 절감)
-
-### 성능 향상 ⭐
-- 📉 **API 비용**: -30% → -50% (하이브리드 검색 추가)
-- 📈 **안정성**: +50% (Rate Limiting + 에러 처리)
-- ⚡ **유지보수**: -40% (프롬프트 중앙화)
+**워크플로우**: PRD 작성 → User Stories 생성 → Jira 티켓 생성
 
 ---
 
-## 🔧 Configuration
+### 멀티 에이전트 시스템
 
-```python
-Configuration(
-    max_search_queries=3,      # 검색 쿼리 수 (1-10)
-    max_search_results=3,      # 쿼리당 결과 수 (1-10)
-    max_reflection_steps=1,    # 반복 횟수 (0-5)
-    llm_model="claude-3-5-sonnet-20241022",
-    temperature=0.7,
-    search_provider="tavily"   # 검색 제공자: tavily / google_adk / hybrid
-)
+| 스킬 | 용도 | 사용 시점 |
+|------|------|----------|
+| **langgraph-multi-agent** | 멀티 에이전트 시스템 구축 | 여러 에이전트 협업 필요 시 |
+| **deep-research** | 웹 리서치 자동화 (8가지 검색 API 지원) | 기업/제품/인물 정보 자동 수집 |
+| **database-designer** | 데이터베이스 설계 & 선택 | DB 기술 선택, 스키마 설계 |
+
+---
+
+### 개발 도구
+
+| 스킬 | 용도 | 사용 시점 |
+|------|------|----------|
+| **playwright-skill** | 브라우저 자동화 | E2E 테스트, UI 검증 |
+| **skill-creator** | 스킬 제작 가이드 | 새 스킬 만들기 |
+
+---
+
+## 📚 공식 레퍼런스 활용
+
+### `.claude/references/` 디렉토리
+
+Claude Code가 vibe coding 시 자동 참조하는 공식 문서들:
+
+#### Google Agent Development Kit (ADK)
+
+- **`google-adk-llms.txt`** (40KB) - 요약본, 빠른 참조
+- **`google-adk-llms-full.txt`** (3.1MB) - 전체 레퍼런스
+
+**포함 내용**:
+- Agent 아키텍처 (LLM-driven, Workflow-based)
+- Multi-agent 패턴 (Coordinator/Dispatcher)
+- Tool 생태계
+- Context & State 관리
+
+#### LangGraph
+
+- **`langgraph-multi-agent.md`** (35KB) - ⭐ 필수! 5가지 아키텍처
+- **`langgraph-agentic-concepts.md`** - Agent 핵심 개념
+- **`langgraph-concepts-low-level.md`** - 저수준 API
+- **`langgraph-README.md`** - 빠른 시작
+
+**사용 예시**:
+```
+"langgraph-multi-agent.md 참고해서 Hierarchical 패턴으로 구현해줘"
+"google-adk-llms.txt에서 Session 관리 방법 찾아줘"
 ```
 
-### 검색 제공자 옵션
+자세한 가이드: [.claude/references/README.md](.claude/references/README.md)
 
-| Provider | 설명 | 비용 | 품질 |
-|----------|------|------|------|
-| **tavily** | Tavily API (유료, 고품질) | $0.005/쿼리 | ⭐⭐⭐⭐⭐ |
-| **google_adk** | Google ADK google_search (무료) | 무료 | ⭐⭐⭐⭐ |
-| **hybrid** | Tavily + Google ADK (비용 최적화) | ~50% 절감 | ⭐⭐⭐⭐⭐ |
+---
 
-**권장 전략:**
-- **프로토타입/테스트**: `google_adk` (무료)
-- **프로덕션**: `hybrid` (품질 + 비용 균형)
-- **최고 품질**: `tavily` (비용 부담 가능 시)
+## 🎓 사용 시나리오
 
-### 권장 설정
+### 시나리오 1: 새 기능 개발 (Agile 워크플로우)
 
-| 용도 | max_queries | max_results | reflection_steps |
-|------|-------------|-------------|------------------|
-| **빠른 조사** | 2 | 2 | 0 |
-| **일반 조사** | 3 | 3 | 1 |
-| **상세 조사** | 5 | 5 | 2 |
+```bash
+# 1. PRD 작성
+/skill agile-product "OAuth 인증 추가"
+→ docs/prd/oauth-authentication-2024-10-23.md 생성
+
+# 2. User Stories 생성
+/skill agile-stories --prd=docs/prd/oauth-authentication-2024-10-23.md
+→ docs/stories/ 에 3개 스토리 생성
+
+# 3. Jira 티켓 생성
+/skill agile-jira --import docs/stories/
+→ Jira에 Epic + Story 티켓 자동 생성
+```
+
+---
+
+### 시나리오 2: 멀티 에이전트 시스템 구축
+
+```bash
+# 1. 레퍼런스 확인
+cat .claude/references/langgraph-multi-agent.md
+
+# 2. Claude에게 요청
+"langgraph-multi-agent.md의 Supervisor 패턴으로
+ 연구자, 작성자, 검토자 에이전트가 협업하는 시스템 만들어줘"
+```
+
+---
+
+### 시나리오 3: 기업 리서치 자동화
+
+```bash
+# 1. 리서치 에이전트 구축
+/skill deep-research
+
+# 2. 데이터베이스 설정
+/skill database-designer
+
+# 3. 실행
+python examples/basic_research.py
+```
+
+---
+
+## 🛠️ 새 에이전트 만들기
+
+### 방법 1: 스킬 활용
+
+```bash
+/skill langgraph-multi-agent
+# Claude가 대화형으로 에이전트 구축 안내
+```
+
+### 방법 2: 레퍼런스 참조
+
+```
+"langgraph-multi-agent.md에서 Network 아키텍처 읽고
+ Customer Support 멀티 에이전트 시스템 만들어줘"
+```
+
+### 방법 3: 예제 복사
+
+```bash
+# Company Research Agent 코드 참고
+cp -r src/agent src/agents/my_new_agent
+# 수정 후 사용
+```
+
+---
+
+## 💡 Vibe Coding 팁
+
+### 1. 레퍼런스 명시
+
+❌ "멀티 에이전트 만들어줘"
+✅ "langgraph-multi-agent.md의 Supervisor 패턴으로 만들어줘"
+
+### 2. 스킬 적극 활용
+
+❌ 직접 Jira API 코딩
+✅ `/skill agile-jira --import docs/stories/`
+
+### 3. 컨텍스트 크기 고려
+
+- 빠른 조회: `google-adk-llms.txt` (40KB)
+- 상세 구현: `google-adk-llms-full.txt` (3.1MB)
+
+### 4. 검색 활용
+
+```bash
+grep -r "StateGraph" .claude/references/
+grep -r "handoff" .claude/references/
+```
 
 ---
 
 ## 📋 요구사항
 
 ### 필수
+
 - Python 3.10+
-- Anthropic API 키
-- Tavily API 키 ([무료 발급](https://tavily.com/))
+- Claude Code CLI
+- Anthropic API 키 (에이전트 실행 시)
 
-### 의존성
-- `langgraph>=0.2.0`
-- `langchain>=0.3.0`
-- `langchain-anthropic`
-- `langchain-community`
-- `pydantic>=2.0.0`
+### 선택 (용도별)
+
+- Tavily API 키 - 웹 검색 에이전트용
+- Jira API 토큰 - agile-jira 스킬용
 
 ---
 
-## 🎓 Claude Code 스킬
+## 🎯 예제 에이전트: Company Research
 
-이 프로젝트는 Claude Code 스킬로 제공됩니다:
+현재 포함된 예제:
 
-**트리거 예시:**
-- "웹에서 회사 정보 자동 조사하는 에이전트 만들어줘"
-- "Tavily로 기업 리서치 시스템 구축해줘"
-- "Research-Extraction-Reflection 패턴 구현해줘"
+**Company Research Agent** - Research-Extraction-Reflection 패턴
+- 자동 웹 검색 + 구조화된 데이터 추출
+- 비상장 중소기업 특화
+- Tavily/Google ADK 멀티 검색 제공자
+
+실행:
+```bash
+python examples/basic_research.py
+```
+
+자세한 문서: [docs/README_DEEP_RESEARCH.md](docs/README_DEEP_RESEARCH.md)
 
 ---
 
-## 📚 문서
+## 🔬 딥리서치 커스터마이징 가이드
 
-| 문서 | 설명 |
-|------|------|
-| **[PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md)** | 프로젝트 전체 요약 |
-| **[CLAUDE.md](docs/CLAUDE.md)** | 구현 상세 문서 |
-| **[README_DEEP_RESEARCH.md](docs/README_DEEP_RESEARCH.md)** | 상세 가이드 |
-| **[COMPARISON_ANALYSIS.md](docs/COMPARISON_ANALYSIS.md)** | company-researcher 비교 |
-| **[IMPROVEMENTS_APPLIED.md](docs/IMPROVEMENTS_APPLIED.md)** | 개선사항 요약 |
-| **[LLM_CLOUD_PRICING_2025.md](docs/LLM_CLOUD_PRICING_2025.md)** | LLM 가격 비교 |
+**핵심 개념: Schema만 바꾸면 어떤 도메인이든 리서치 가능!**
+
+Company Research Agent는 **범용 웹 리서치 엔진**입니다. `extraction_schema`만 변경하면 회사, 제품, 인물, 논문 등 어떤 도메인이든 자동 리서치할 수 있습니다.
+
+### 커스터마이징 3단계
+
+```python
+# 1. Schema 정의 (무엇을 추출할지)
+custom_schema = {
+    "title": "Product Analysis",
+    "type": "object",
+    "properties": {
+        "product_name": {"type": "string"},
+        "price": {"type": "string"},
+        "features": {"type": "array", "items": {"type": "string"}},
+        "reviews_summary": {"type": "string"}
+    }
+}
+
+# 2. 검색 제공자 선택 (무료 or 유료)
+config = Configuration(
+    search_provider="serper",  # 무료 2,500 쿼리
+    max_search_queries=3
+)
+
+# 3. 실행!
+result = await graph.ainvoke({
+    "company_name": "iPhone 15 Pro",  # 리서치 대상
+    "extraction_schema": custom_schema,
+    "user_context": "Focus on camera features and battery life"
+})
+```
+
+**그게 전부입니다!** 나머지 코드(Research-Extraction-Reflection 루프)는 완전히 재사용됩니다.
 
 ---
 
-## 🚦 문제 해결
+### 8가지 웹 검색 API 비교
 
-### API 키 오류
-```
-Error: ANTHROPIC_API_KEY not found
-```
-→ `.env` 파일에 API 키 설정 확인
+다양한 무료/유료 옵션 제공. 자세한 내용은 [deep-research 스킬](.claude/skills/deep-research/references/WEB_SEARCH_APIS.md) 참조.
 
-### Tavily API 오류
-```
-Error: TAVILY_API_KEY not found
-```
-→ https://tavily.com/ 에서 무료 API 키 발급
+| Provider | Free Tier | Quality | Best For |
+|----------|-----------|---------|----------|
+| **Jina AI Reader** | 200 RPM 무료 | ⭐⭐⭐ | 개발/테스트, URL→텍스트 변환 |
+| **Serper.dev** | 2,500 lifetime | ⭐⭐⭐⭐ | **무료 프로덕션 최고** |
+| **Tavily** | 1,000/월 | ⭐⭐⭐⭐⭐ | 프로덕션 품질 |
+| **Exa** | $10 credit or 1k/월 | ⭐⭐⭐⭐ | AI 네이티브 시맨틱 검색 |
+| **Brave** | 무료 티어 | ⭐⭐⭐ | 프라이버시 중시 |
+| **DuckDuckGo** | 무제한 무료 | ⭐⭐ | 테스트용 (느림) |
+| **SerpAPI** | 100/월 | ⭐⭐⭐⭐ | 구글 결과 스크래핑 |
+| **Google ADK** | Gemini 2.0+ 무료 | ⭐⭐⭐⭐ | Gemini 사용자 |
 
-### 모듈 import 오류
+**추천:**
+- 시작: **DuckDuckGo** (완전 무료, API 키 불필요)
+- 프로덕션: **Serper.dev** (2,500 무료 쿼리) 또는 **Tavily** (최고 품질)
+- 시맨틱 검색: **Exa** (AI 네이티브)
+
+---
+
+### 빠른 커스터마이징 예제
+
+#### 예제 1: 제품 리서치
+
+```python
+PRODUCT_SCHEMA = {
+    "title": "Product Research",
+    "properties": {
+        "product_name": {"type": "string"},
+        "manufacturer": {"type": "string"},
+        "price_range": {"type": "string"},
+        "key_features": {"type": "array", "items": {"type": "string"}},
+        "pros": {"type": "array", "items": {"type": "string"}},
+        "cons": {"type": "array", "items": {"type": "string"}},
+        "user_rating": {"type": "string"},
+        "competitors": {"type": "array", "items": {"type": "string"}}
+    }
+}
+
+config = Configuration(search_provider="serper")  # 무료
+result = await graph.ainvoke({
+    "company_name": "Sony WH-1000XM5",  # 제품명
+    "extraction_schema": PRODUCT_SCHEMA
+})
 ```
-ModuleNotFoundError: No module named 'langgraph'
+
+#### 예제 2: 인물 리서치 (LinkedIn 프로필 대안)
+
+```python
+PERSON_SCHEMA = {
+    "title": "Professional Profile",
+    "properties": {
+        "full_name": {"type": "string"},
+        "current_position": {"type": "string"},
+        "company": {"type": "string"},
+        "education": {"type": "array", "items": {"type": "string"}},
+        "work_history": {"type": "array", "items": {"type": "string"}},
+        "publications": {"type": "array", "items": {"type": "string"}},
+        "social_media": {"type": "object"}
+    }
+}
+
+result = await graph.ainvoke({
+    "company_name": "Dario Amodei",  # 인물명
+    "extraction_schema": PERSON_SCHEMA,
+    "user_context": "Focus on AI research and Anthropic role"
+})
 ```
-→ `pip install -r requirements.txt` 실행
+
+#### 예제 3: 학술 논문 리서치
+
+```python
+PAPER_SCHEMA = {
+    "title": "Research Paper Analysis",
+    "properties": {
+        "title": {"type": "string"},
+        "authors": {"type": "array", "items": {"type": "string"}},
+        "publication_date": {"type": "string"},
+        "abstract_summary": {"type": "string"},
+        "key_findings": {"type": "array", "items": {"type": "string"}},
+        "methodology": {"type": "string"},
+        "citations_count": {"type": "string"},
+        "related_papers": {"type": "array", "items": {"type": "string"}}
+    }
+}
+
+result = await graph.ainvoke({
+    "company_name": "Attention Is All You Need",
+    "extraction_schema": PAPER_SCHEMA,
+    "user_context": "Focus on transformer architecture"
+})
+```
+
+#### 예제 4: 경쟁사 분석
+
+```python
+COMPETITOR_SCHEMA = {
+    "title": "Competitor Analysis",
+    "properties": {
+        "company_name": {"type": "string"},
+        "market_position": {"type": "string"},
+        "key_products": {"type": "array", "items": {"type": "string"}},
+        "pricing_strategy": {"type": "string"},
+        "strengths": {"type": "array", "items": {"type": "string"}},
+        "weaknesses": {"type": "array", "items": {"type": "string"}},
+        "recent_news": {"type": "array", "items": {"type": "string"}},
+        "funding": {"type": "string"}
+    }
+}
+
+config = Configuration(
+    search_provider="tavily",  # 고품질
+    max_search_queries=5  # 더 많은 정보
+)
+
+result = await graph.ainvoke({
+    "company_name": "OpenAI",
+    "extraction_schema": COMPETITOR_SCHEMA
+})
+```
+
+---
+
+### 검색 제공자별 설정 예제
+
+```python
+# 완전 무료 (테스트용)
+config_free = Configuration(search_provider="duckduckgo")
+
+# 무료 프로덕션 (2,500 쿼리)
+config_prod_free = Configuration(search_provider="serper")
+
+# 최고 품질 (유료)
+config_premium = Configuration(search_provider="tavily")
+
+# AI 시맨틱 검색
+config_semantic = Configuration(search_provider="exa")
+
+# 하이브리드 (비용 절감)
+config_hybrid = Configuration(
+    search_provider="hybrid"  # Tavily + 무료 조합
+)
+```
+
+---
+
+### 실전 팁
+
+1. **Schema 설계**
+   - 플랫하게 유지 (깊은 중첩 피하기)
+   - 각 필드에 명확한 `description` 추가
+   - 필수 필드는 최소화
+
+2. **검색 제공자 선택**
+   - 개발: DuckDuckGo (무료, 느림)
+   - 프로덕션: Serper (2,500 무료) → Tavily (품질)
+   - 시맨틱 검색 필요: Exa
+
+3. **비용 최적화**
+   - `max_search_queries=3` 으로 시작
+   - `max_reflection_steps=1` 으로 제한
+   - 무료 티어 모니터링 (Serper 2,500 쿼리)
+
+4. **품질 향상**
+   - `user_context`로 검색 방향 제어
+   - 구체적인 schema descriptions 작성
+   - reflection 활성화 (`max_reflection_steps=2`)
+
+---
+
+### 다음 단계
+
+1. **커스텀 Schema 작성**: `.claude/skills/deep-research/SKILL.md` 참조
+2. **API 키 설정**: [WEB_SEARCH_APIS.md](.claude/skills/deep-research/references/WEB_SEARCH_APIS.md) 참조
+3. **예제 실행**: `examples/custom_schema.py` 수정 후 실행
+
+**모든 도메인에 적용 가능한 범용 리서치 엔진입니다!** 🚀
 
 ---
 
 ## 🤝 기여
 
-이슈나 풀 리퀘스트를 환영합니다!
+새 스킬, 에이전트 예제, 레퍼런스 문서 추가를 환영합니다!
+
+### 추가할 만한 것들
+
+- [ ] 더 많은 멀티 에이전트 예제
+- [ ] RAG 에이전트 스킬
+- [ ] SQL 에이전트 스킬
+- [ ] 커스텀 Tool 라이브러리
+- [ ] 배포 가이드
 
 ---
 
@@ -347,13 +562,28 @@ MIT License
 
 ## 🔗 참고 자료
 
-- [LangGraph 공식 문서](https://langchain-ai.github.io/langgraph/)
-- [LangChain Company Researcher](https://github.com/langchain-ai/company-researcher) (참고 구현)
-- [Tavily API](https://tavily.com/)
-- [Anthropic Claude](https://www.anthropic.com/)
+### 공식 문서
+- [Google ADK](https://google.github.io/adk-docs/)
+- [LangGraph](https://langchain-ai.github.io/langgraph/)
+- [Claude Code](https://docs.claude.com/claude-code)
+
+### 커뮤니티
+- [LangGraph Examples](https://github.com/langchain-ai/langgraph)
+- [Agent Service Toolkit](https://github.com/JoshuaC215/agent-service-toolkit)
+- [Claude Code Skills](https://github.com/anthropics/skills)
 
 ---
 
-**Made with ❤️ using LangGraph + Anthropic Claude + Tavily**
+## 🎉 시작하기
 
-v2.0.0 - Production Ready ⭐
+1. **레퍼런스 읽기**: `.claude/references/README.md`
+2. **스킬 둘러보기**: `.claude/skills/`
+3. **예제 실행**: `python examples/basic_research.py`
+4. **Claude에게 요청**: "langgraph-multi-agent.md 참고해서 새 에이전트 만들어줘"
+
+**Happy vibe coding! 🚀**
+
+---
+
+**Multi-Agent Workspace** v1.0.0
+*For Claude Code vibe coders*
