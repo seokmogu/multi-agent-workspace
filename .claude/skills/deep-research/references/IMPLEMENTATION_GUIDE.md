@@ -36,6 +36,47 @@ class Configuration(BaseModel):
         frozen = True
 ```
 
+### LLM Model Selection
+
+The `llm_model` field determines which LLM to use. For cost optimization and latest models, **always refer to** [`LLM_SELECTION.md`](./LLM_SELECTION.md) which references the central pricing document.
+
+**Common configurations:**
+
+```python
+# Production (lowest cost) - DeepSeek
+config = Configuration(
+    llm_model="deepseek-chat",  # $0.028/$0.42 with caching
+    search_provider="google_adk"  # Free search
+)
+
+# Balanced - Qwen
+config = Configuration(
+    llm_model="qwen-flash",  # $0.05/$0.40
+    search_provider="google_adk"
+)
+
+# Google ecosystem - Gemini
+config = Configuration(
+    llm_model="gemini-2.0-flash",  # $0.10/$0.40
+    search_provider="google_adk",
+    use_gemini_for_google_search=True
+)
+
+# Premium quality (default) - Claude
+config = Configuration(
+    llm_model="claude-sonnet-4-5-20250929",  # $3/$15 (cached)
+    search_provider="hybrid"  # Cost optimization
+)
+```
+
+**Cost comparison for 1,000 companies/month:**
+- DeepSeek + Google ADK: **$20/month** (Off-Peak: $10-15)
+- Qwen + Google ADK: **$19/month**
+- Gemini + Google ADK: **$22/month**
+- Claude + Hybrid: **$40/month**
+
+See [`LLM_SELECTION.md`](./LLM_SELECTION.md) for detailed pricing and implementation examples.
+
 ## File 2: state.py
 
 ```python

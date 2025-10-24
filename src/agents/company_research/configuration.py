@@ -39,7 +39,25 @@ class Configuration(BaseModel):
         ),
     ] = 1
 
-    llm_model: str = "claude-sonnet-4-5-20250929"  # Latest: Claude Sonnet 4.5 (Sep 2025)
+    llm_model: Annotated[
+        str,
+        Field(
+            description="""LLM model to use for research, extraction, and reflection.
+
+            For latest pricing and new models, see:
+            - .claude/skills/deep-research/references/LLM_SELECTION.md
+            - docs/LLM_CLOUD_PRICING_2025.md
+
+            Common options:
+            - "deepseek-chat": $0.028/$0.42 (cached), lowest cost, ~$20/month for 1k companies
+            - "qwen-flash": $0.05/$0.40, OpenAI-compatible, ~$19/month
+            - "gemini-2.0-flash": $0.10/$0.40, Google ecosystem, ~$22/month
+            - "claude-sonnet-4-5-20250929": $3/$15 (cached), best quality, ~$40/month (default)
+
+            See LLM_SELECTION.md for implementation examples and cost comparisons.
+            """
+        ),
+    ] = "claude-sonnet-4-5-20250929"  # Default: Claude Sonnet 4.5 (best quality)
 
     temperature: float = 0.7
 

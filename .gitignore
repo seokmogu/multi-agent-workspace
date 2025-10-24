@@ -80,3 +80,8 @@ docker-compose.override.yml
 # Generated documents (workspace artifacts)
 docs/prd/
 docs/stories/
+
+# Node.js (for Claude Code skills that use npm packages)
+node_modules/
+package-lock.json
+package.json

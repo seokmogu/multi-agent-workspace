@@ -98,6 +98,26 @@ Choose based on budget and quality needs:
 
 All providers are fully implemented in `research.py` with error handling and fallbacks.
 
+### 3.5 LLM Selection (Cost Optimization)
+
+Choose the right LLM based on your budget and quality needs:
+
+| LLM | Cost (Input/Output per 1M) | Monthly Cost* | Quality | Use Case |
+|-----|---------------------------|---------------|---------|----------|
+| **DeepSeek** | $0.028/$0.42 (cached) | **$20** | ⭐⭐⭐ | **Production (lowest cost)** ⭐⭐⭐ |
+| **Qwen-Flash** | $0.05/$0.40 | **$19** | ⭐⭐⭐ | OpenAI-compatible, low cost |
+| **Gemini 2.0 Flash** | $0.10/$0.40 | **$22** | ⭐⭐⭐⭐ | Google ecosystem |
+| **Claude Sonnet 4.5** | $3/$15 | **$40** (cached) | ⭐⭐⭐⭐⭐ | **Best quality** (default) |
+
+*For 1,000 companies/month with free search
+
+**For latest pricing and new models**: See `references/LLM_SELECTION.md` which references the central pricing document (`docs/LLM_CLOUD_PRICING_2025.md`).
+
+**Quick start:**
+- **Development**: Gemini 2.0 Flash + DuckDuckGo (free)
+- **Production**: DeepSeek + Google ADK ($10-20/month)
+- **Quality-first**: Claude Sonnet 4.5 + Hybrid search ($40/month)
+
 ### 4. Usage Example
 
 ```python
@@ -165,8 +185,12 @@ _rate_limiter = InMemoryRateLimiter(
 
 - **Processing time**: 45-90 seconds per company
 - **API calls**: 3-9 per company (with deduplication)
-- **Cost (Tavily)**: ~$0.015-0.045 per company
-- **Cost (Hybrid)**: ~$0.0075-0.0225 per company (50% savings)
+- **Search cost (Tavily)**: ~$0.015-0.045 per company
+- **Search cost (Google ADK)**: $0 (free)
+- **LLM cost (DeepSeek)**: ~$0.002-0.003 per company (cached)
+- **LLM cost (Claude)**: ~$0.02-0.04 per company (cached)
+- **Total cost (DeepSeek + Google ADK)**: ~$0.002-0.003 per company ⭐
+- **Total cost (Claude + Tavily)**: ~$0.035-0.085 per company
 - **Success rate**: 85-95% (schema completeness)
 
 ## Reference Materials
@@ -174,8 +198,12 @@ _rate_limiter = InMemoryRateLimiter(
 For detailed implementation guidance, see:
 - `references/IMPLEMENTATION_GUIDE.md` - Complete code examples for all 10 files
 - `references/SEARCH_PROVIDERS.md` - Detailed guide for all 7 search providers
+- `references/LLM_SELECTION.md` - LLM cost optimization guide (references central pricing doc)
 - `references/TROUBLESHOOTING.md` - Common issues and solutions
 - `references/PRODUCTION_CHECKLIST.md` - Pre-deployment validation
+
+**Central Documents** (always up-to-date):
+- `docs/LLM_CLOUD_PRICING_2025.md` - Comprehensive LLM pricing comparison
 
 ## Dependencies
 
