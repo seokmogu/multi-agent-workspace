@@ -113,7 +113,7 @@ async def main():
         max_search_queries=3,
         max_search_results=3,
         max_reflection_steps=1,
-        llm_model="claude-3-5-sonnet-20241022"
+        llm_model="claude-sonnet-4-5-20250929"
     )
 
     # 그래프 빌드
@@ -191,7 +191,7 @@ class Configuration:
     max_search_queries: int = 3       # 검색 쿼리 수 (1-10)
     max_search_results: int = 3       # 쿼리당 결과 수 (1-10)
     max_reflection_steps: int = 1     # 반복 횟수 (0-5)
-    llm_model: str = "claude-3-5-sonnet-20241022"
+    llm_model: str = "claude-sonnet-4-5-20250929"
     temperature: float = 0.7
 ```
 

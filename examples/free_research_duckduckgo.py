@@ -24,7 +24,7 @@ async def main():
         max_search_queries=3,
         max_search_results=3,
         max_reflection_steps=1,
-        llm_model="claude-3-5-sonnet-20241022",
+        llm_model="claude-sonnet-4-5-20250929",  # Latest Claude Sonnet 4.5
         temperature=0.7,
         search_provider="duckduckgo"  # FREE! No API key needed
     )

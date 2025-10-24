@@ -41,7 +41,7 @@ class Configuration(BaseModel):
     max_search_queries: int = 3
     max_search_results: int = 3
     max_reflection_steps: int = 1
-    llm_model: str = "claude-3-5-sonnet-20241022"
+    llm_model: str = "claude-sonnet-4-5-20250929"
     temperature: float = 0.7
 ```
 

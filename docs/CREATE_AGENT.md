@@ -148,7 +148,7 @@ class Configuration:
     """에이전트 설정"""
 
     # LLM 설정
-    llm_model: str = "claude-3-5-sonnet-20241022"
+    llm_model: str = "claude-sonnet-4-5-20250929"
     temperature: float = 0.7
 
     # 에이전트 설정
