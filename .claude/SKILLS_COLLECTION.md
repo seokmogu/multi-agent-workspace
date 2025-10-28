@@ -3,7 +3,7 @@
 > 풀스택 웹 개발을 위한 바이브 코딩 스킬 모음
 
 **Last Updated**: 2025-10-28
-**Total Skills**: 8
+**Total Skills**: 9
 **Project**: Nexus Realty (Office Property Search Platform)
 **Development Style**: 🤖 100% Vibe Coding with Claude Code
 
@@ -11,13 +11,14 @@
 
 ## 🎯 Skills Overview
 
-Nexus Realty는 **FastAPI + Next.js 15** 풀스택 개발을 위한 8개 스킬을 제공합니다.
+Nexus Realty는 **FastAPI + Next.js 15** 풀스택 개발을 위한 9개 스킬을 제공합니다.
 
 ### Skills by Category
 
 | Category | Skills | Purpose |
 |----------|--------|---------|
 | **Agile (3)** | agile-product, agile-stories, agile-jira | PRD → User Stories → Jira 자동화 |
+| **Database (1)** | database-designer | DB 선택, 스키마 설계, 마이그레이션 |
 | **Frontend (1)** | fullstack-frontend | Next.js 14 템플릿 생성 |
 | **Testing (1)** | playwright-skill | E2E 테스트 자동화 |
 | **Utilities (3)** | skill-creator, workspace-transplant | 스킬 관리, 코드 이식 |
@@ -142,9 +143,84 @@ Jira Project: NEXUS
 
 ---
 
+## 🗄️ Database Design
+
+### 4. database-designer
+
+**Purpose**: DB 선택부터 스키마 설계, 마이그레이션까지 전체 데이터베이스 솔루션 설계
+
+**Key Features**:
+- **DB 선택 가이드** - Supabase, PostgreSQL, MongoDB, Firebase 등 비교
+- **스키마 설계** - PRD 기반 자동 테이블 설계
+- **관계 정의** - 1:N, N:M 관계 및 Foreign Key
+- **마이그레이션 생성** - SQLAlchemy/Alembic 코드 자동 생성
+- **인덱스 최적화** - 쿼리 성능 향상 제안
+- **비용 분석** - SaaS vs Self-hosted 비교
+
+**Quick Selection Guide**:
+| Need | Best Choice | Why |
+|------|-------------|-----|
+| MVP/Prototype | Supabase (Free) | 즉시 설정, 무료 티어, 내장 Auth |
+| Serverless | PlanetScale, Neon | Auto-scaling, 브랜칭 |
+| Real-time | Supabase, Firebase | 실시간 구독 내장 |
+| Full Control | PostgreSQL | 최대 유연성, 벤더 종속 없음 |
+| Document Store | MongoDB Atlas | 유연한 스키마 |
+
+**Nexus Realty 사용 케이스**:
+```bash
+# 1. 기존 DB 스키마 분석
+/skill database-designer
+
+→ "Analyze existing property database schema"
+
+# 2. Nexus Realty용 테이블 설계
+→ Properties, Users, Favorites, Inquiries 자동 설계
+
+# 3. SQLAlchemy 모델 생성
+→ app/models/ 디렉토리에 ORM 모델 생성
+
+# 4. Alembic 마이그레이션 생성
+→ alembic/versions/ 마이그레이션 파일 생성
+```
+
+**Output Example**:
+```python
+# app/models/property.py
+from sqlalchemy import Column, Integer, String, Float, DateTime
+from app.core.database import Base
+
+class Property(Base):
+    __tablename__ = "properties"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    address = Column(String, nullable=False)
+    area_sqm = Column(Float)
+    monthly_rent = Column(Integer)
+    deposit = Column(Integer)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    created_at = Column(DateTime)
+```
+
+**When to Use**:
+- 프로젝트 시작 전 DB 기술 선택
+- 기존 DB 스키마 분석 및 수정
+- 새로운 테이블 설계 필요 시
+- 마이그레이션 코드 자동 생성
+
+**References**:
+- `references/DATABASE_OPTIONS.md` - DB 비교 가이드
+- `references/SCHEMA_DESIGN_PATTERNS.md` - 스키마 패턴
+- `references/API_REFERENCE.md` - DB별 API 레퍼런스
+- `references/api/postgresql.md` - PostgreSQL 상세
+- `references/api/supabase.md` - Supabase 상세
+
+---
+
 ## 🎨 Frontend Development
 
-### 4. fullstack-frontend (Next.js 14)
+### 5. fullstack-frontend (Next.js 14)
 
 **Purpose**: Next.js 14 + shadcn/ui 프론트엔드 템플릿 생성
 
@@ -214,7 +290,7 @@ nexus-frontend/
 
 ## 🧪 Testing
 
-### 5. playwright-skill (E2E Testing)
+### 6. playwright-skill (E2E Testing)
 
 **Purpose**: Playwright 기반 브라우저 자동화 및 E2E 테스트
 
@@ -279,7 +355,7 @@ const { chromium } = require('playwright');
 
 ## 🛠️ Utilities
 
-### 6. skill-creator
+### 7. skill-creator
 
 **Purpose**: 새로운 Claude Code 스킬 생성 도구
 
@@ -301,7 +377,7 @@ const { chromium } = require('playwright');
 
 ---
 
-### 7. workspace-transplant
+### 8. workspace-transplant
 
 **Purpose**: 멀티에이전트 워크스페이스 패턴 이식
 
@@ -366,6 +442,7 @@ const { chromium } = require('playwright');
 | agile-product | Planning | 매 기능마다 | 🤖🤖🤖🤖⚪ 80% |
 | agile-stories | Planning | 매 기능마다 | 🤖🤖🤖🤖🤖 100% |
 | agile-jira | Planning | 매 Sprint마다 | 🤖🤖🤖🤖🤖 100% |
+| database-designer | Database | 프로젝트 초기/변경시 | 🤖🤖🤖🤖⚪ 80% |
 | fullstack-frontend | Setup | 프로젝트 초기 | 🤖🤖🤖🤖⚪ 80% |
 | playwright-skill | Testing | 주요 기능마다 | 🤖🤖🤖⚪⚪ 60% |
 | skill-creator | Utility | 필요시 | 🤖🤖🤖🤖⚪ 80% |
@@ -383,8 +460,7 @@ const { chromium } = require('playwright');
 - `pptx` - PowerPoint 처리
 - `xlsx` - Excel 처리
 
-**멀티에이전트 (3개)**:
-- `database-designer` - DB 스키마 자동 설계
+**멀티에이전트 (2개)**:
 - `deep-research` - 웹 검색 기반 리서치
 - `langgraph-multi-agent` - LangGraph 멀티에이전트 패턴
 

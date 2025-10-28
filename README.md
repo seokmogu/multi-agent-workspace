@@ -47,7 +47,7 @@
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-username/nexus-realty.git
+git clone https://github.com/seokmogu/nexus-realty.git
 cd nexus-realty
 
 # 환경 변수 설정
@@ -60,7 +60,7 @@ docker-compose up
 
 ### 접속
 
-- **Frontend**: http://localhost:3000
+- **Frontend**: http://localhost:4000
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
