@@ -1,589 +1,411 @@
-# Claude Code Skills Collection
+# Nexus Realty - Claude Code Skills Collection
 
-Complete collection of skills for this project, following Anthropic's Skill-Creator best practices.
+> 풀스택 웹 개발을 위한 바이브 코딩 스킬 모음
 
-**Last Updated**: 2025-10-23 (v2 - Skill-Creator Optimized)
-**Total Skills**: 8 (7 production + 1 reference)
-**Recently Updated**: deep-research (v2), database-designer (v2), langgraph-multi-agent (v2)
+**Last Updated**: 2025-10-28
+**Total Skills**: 8
+**Project**: Nexus Realty (Office Property Search Platform)
+**Development Style**: 🤖 100% Vibe Coding with Claude Code
 
 ---
 
-## Production Skills (7)
+## 🎯 Skills Overview
 
-### 1. 🎯 agile-master
-**Path**: `.claude/skills/agile-master/`
-**Type**: Project Management & Automation
-**Status**: Production (v1)
+Nexus Realty는 **FastAPI + Next.js 15** 풀스택 개발을 위한 8개 스킬을 제공합니다.
 
-**What It Does**:
-End-to-end agile project management from PRD writing to Jira ticket creation. Interactive workflow for Epic → User Story → Implementation Task → PR → Deployment lifecycle.
+### Skills by Category
+
+| Category | Skills | Purpose |
+|----------|--------|---------|
+| **Agile (3)** | agile-product, agile-stories, agile-jira | PRD → User Stories → Jira 자동화 |
+| **Frontend (1)** | fullstack-frontend | Next.js 14 템플릿 생성 |
+| **Testing (1)** | playwright-skill | E2E 테스트 자동화 |
+| **Utilities (3)** | skill-creator, workspace-transplant | 스킬 관리, 코드 이식 |
+
+---
+
+## 📝 Agile Skills (Product Management)
+
+### 1. agile-product (PM Role)
+
+**Purpose**: Product Manager를 위한 PRD(Product Requirements Document) 작성
 
 **Key Features**:
-- Interactive PRD creation (guided Q&A)
-- Jira Epic/Story/Task auto-generation
-- Acceptance Criteria in Given-When-Then format
-- Team member assignment
-- Progress tracking
+- 인터랙티브 Q&A 기반 PRD 생성
+- 비즈니스 목표 및 성공 지표 정의
+- 사용자 페르소나 및 사용 사례
+- 기능/비기능 요구사항
+- 범위 정의 (In/Out of Scope)
 
-**When to Use**:
-- Starting new features or epics
-- Sprint planning sessions
-- Creating comprehensive Jira workflows
+**Output**:
+```
+docs/prd/매물-검색-필터링-2025-10-28.md
+```
 
-**Integrations**:
-- Requires: Jira MCP (`.mcp.json`)
-- Works with: GitHub MCP (PR linking)
+**Usage**:
+```bash
+/skill agile-product "매물 검색 및 필터링 기능"
+```
 
 **Files**:
-- SKILL.md (2,803 words)
-- README.md, SETUP.md
-
-**Related**: See agile-master-v2 for Skill-Creator optimized version
-
----
-
-### 2. 🎯 agile-master-v2
-**Path**: `.claude/skills/agile-master-v2/`
-**Type**: Project Management & Automation
-**Status**: Testing (v2 - Skill-Creator Optimized)
-
-**What It Does**:
-Same as agile-master v1, but restructured following Skill-Creator progressive disclosure pattern.
-
-**Key Differences from v1**:
-- 59% smaller SKILL.md (1,151 vs 2,803 words)
-- Detailed guides in `references/` (4,200+ words for PRD, 2,800+ for User Stories)
-- Reusable templates in `assets/templates/`
-- Progressive disclosure (loads only what's needed)
-
-**Structure**:
-```
-agile-master-v2/
-├── SKILL.md (1,151 words - core overview)
-├── references/
-│   ├── prd-guide.md (4,200+ words)
-│   └── user-story-guide.md (2,800+ words)
-└── assets/
-    └── templates/
-        └── user-story-template.md
-```
-
-**Performance**:
-- 2.4x more context-efficient for common tasks
-- 10x more comprehensive guidance for deep dives
-
-**Recommendation**: Use v2 for production after testing
-
----
-
-### 3. 📚 agile-docs-framework
-**Path**: `.claude/skills/agile-docs-framework/`
-**Type**: Documentation Templates & Guidelines
-**Status**: Production
-
-**What It Does**:
-Comprehensive documentation framework for agile teams. Provides templates, best practices, and structure for PRD, Technical Design, User Stories, Test Plans.
-
-**Key Features**:
-- Document hierarchy guidance (PRD → TDD → Story → AC)
-- Complete templates for all doc types
-- QA integration patterns
-- Traceability best practices
+- `SKILL.md` - 핵심 워크플로우
+- `references/prd-guide.md` - 상세 가이드
+- `references/prd-example.md` - 전체 예제
 
 **When to Use**:
-- Establishing team documentation standards
-- Creating new feature documentation
-- Onboarding team members to doc practices
+- 새로운 기능 개발 시작 전
+- 요구사항 명확화 필요 시
+- 팀 커뮤니케이션용 문서 필요 시
 
-**Complements**:
-- agile-master (provides the automation)
-- agile-docs-framework (provides the guidance)
+---
+
+### 2. agile-stories (PO/Scrum Master Role)
+
+**Purpose**: PRD를 User Stories로 분해 (Given-When-Then 형식)
+
+**Key Features**:
+- PRD 파일 자동 읽기 및 분석
+- Epic 구조 식별
+- User Story 생성 (Acceptance Criteria 포함)
+- Story Points 추정 (Fibonacci)
+- Definition of Done 작성
+
+**Output**:
+```
+docs/stories/
+├── 매물-지역-검색.md (5 points)
+├── 매물-가격-필터링.md (3 points)
+└── 매물-지도-표시.md (8 points)
+```
+
+**Usage**:
+```bash
+/skill agile-stories
+# PRD 경로 자동 감지 또는 대화형 선택
+```
 
 **Files**:
-- SKILL.md (17K - comprehensive guide)
+- `SKILL.md` - 워크플로우
+- `references/user-story-guide.md` - AC 작성 예제
+- `references/story-template.md` - 템플릿
+
+**When to Use**:
+- PRD 작성 완료 후
+- Sprint Planning 전
+- 백로그 준비 시
 
 ---
 
-### 4. 🔍 deep-research
-**Path**: `.claude/skills/deep-research/`
-**Type**: AI Research Agent (LangGraph + 8 Web Search APIs)
-**Status**: Production (Skill-Creator Optimized)
+### 3. agile-jira (Developer/PM Role)
 
-**What It Does**:
-Universal web research engine with LangGraph. Change schema to research any domain: companies, products, people, papers, competitors. Iterative research → extract → reflect loop with quality evaluation.
-
-**Architecture**:
-```
-Research Phase → Extraction Phase → Reflection Phase
-     ↑                                       ↓
-     └──────── Loop if incomplete ──────────┘
-```
+**Purpose**: User Stories를 Jira 티켓으로 자동 생성
 
 **Key Features**:
-- **8 web search APIs** with free tiers (Jina, Serper, Tavily, Exa, Brave, DuckDuckGo, SerpAPI, Bing)
-- Custom JSON schema extraction (any domain)
-- Iterative quality improvement
-- Optimized for private SME research
+- Epic/Story/Task 자동 생성
+- Jira REST API 직접 호출
+- 팀원 자동 할당
+- Story Points 연동
+- Progress Tracking
 
-**When to Use**:
-- Company/product/person profiling
-- Market research automation
-- Competitive analysis
-- Academic paper research
-- **Any structured web research task**
-
-**Tech Stack**:
-- LangGraph (workflow orchestration)
-- LangChain Anthropic (Claude integration)
-- Multiple search providers (see references/WEB_SEARCH_APIS.md)
-- Pydantic (schema validation)
-
-**New Structure (v2)**:
+**Output**:
 ```
-deep-research/
-├── SKILL.md (346 lines - concise guide)
-└── references/
-    ├── WEB_SEARCH_APIS.md (8 providers, pricing, LangChain code)
-    └── PRIVATE_SME_RESEARCH.md (SME research strategies)
+Jira Project: NEXUS
+├── Epic: 매물 검색 기능
+│   ├── Story: NEXUS-101 (지역 검색)
+│   ├── Story: NEXUS-102 (가격 필터)
+│   └── Story: NEXUS-103 (지도 표시)
 ```
 
-**Free Options**:
-- DuckDuckGo: Unlimited (slow)
-- Jina AI: 200 RPM free
-- Serper.dev: 2,500 lifetime free ⭐ Best free production
-- Tavily: 1,000/month
-- Exa: $10 credit or 1k/month
-
----
-
-### 5. 🗄️ database-designer
-**Path**: `.claude/skills/database-designer/`
-**Type**: Database Architecture & Selection
-**Status**: Production (Skill-Creator Optimized)
-
-**What It Does**:
-Universal database design tool for ANY project. Analyze PRD → Select database → Design schema → Implement. Supports 15+ database options from SaaS to self-hosted.
-
-**Key Features**:
-- **15+ database options** with free tier comparison (Supabase, PlanetScale, Neon, Firebase, PostgreSQL, MongoDB, etc.)
-- Database selection decision framework
-- 10+ common schema design patterns (User Auth, E-commerce, Blog, Multi-tenancy, etc.)
-- Migration strategies between databases
-
-**When to Use**:
-- Choosing database for new project
-- Designing data models from requirements
-- Migrating between databases
-- Optimizing existing schemas
-- Evaluating SaaS vs self-hosted options
-
-**Structure**:
-```
-database-designer/
-├── SKILL.md (concise selection guide)
-└── references/
-    ├── DATABASE_OPTIONS.md (15 DBs: pricing, pros/cons, setup)
-    └── SCHEMA_DESIGN_PATTERNS.md (10 patterns with SQL examples)
-```
-
-**Database Options**:
-- **SaaS**: Supabase ⭐, PlanetScale, Neon, Firebase, MongoDB Atlas
-- **Cloud**: AWS RDS/Aurora, Google Cloud SQL, Azure Database
-- **Self-hosted**: PostgreSQL, MySQL, MongoDB, SQLite
-- **Special**: Redis (cache), ClickHouse (analytics)
-
-**All with generous free tiers!**
-
----
-
-### 6. 🤖 langgraph-multi-agent
-**Path**: `.claude/skills/langgraph-multi-agent/`
-**Type**: Multi-Agent System Architecture
-**Status**: Production
-
-**What It Does**:
-Framework for building collaborative multi-agent systems with LangGraph. Researcher → Writer → Reviewer sequential workflow with conditional routing.
-
-**Architecture**:
-```
-Researcher Agent → Writer Agent → Reviewer Agent
-                        ↓
-                  [Good] → Complete
-                  [Needs Revision] → Loop to Writer
-```
-
-**Key Features**:
-- Multi-agent collaboration patterns
-- Conditional routing
-- State management across agents
-- Sequential workflow orchestration
-
-**When to Use**:
-- Document generation workflows
-- Report writing with review loops
-- Any multi-step AI workflow
-
-**Example Use Case**:
-- Research topic → Write report → Review quality → Revise if needed
-
----
-
-### 7. 🎭 playwright-skill
-**Path**: `.claude/skills/playwright-skill/`
-**Type**: Browser Automation & Testing
-**Status**: Production (v4.0.0)
-**Source**: https://github.com/lackeyjb/playwright-skill (Community)
-
-**What It Does**:
-Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts, executes E2E tests, takes screenshots, validates UX.
-
-**Key Features**:
-- **Model-invoked** (Claude decides when to use)
-- Auto-detects running localhost servers
-- Visible browser by default (easier debugging)
-- 7 common patterns (responsive, login, forms, links, screenshots)
-- Helper library (`lib/helpers.js`)
-
-**Common Patterns**:
-1. Responsive design testing (mobile, tablet, desktop)
-2. Login flow automation
-3. Form filling & submission
-4. Link validation
-5. Screenshot capture
-6. Visual regression testing
-7. Custom automation
-
-**When to Use**:
-- Web application E2E testing
-- Automated form filling
-- Screenshot capture across viewports
-- Link checking
-- Any browser automation task
-
-**Critical Workflow**:
-1. Auto-detect dev servers
-2. Write scripts to `/tmp`
-3. Use visible browser (headless: false)
-4. Execute via `run.js`
-
-**Structure**:
-```
-playwright-skill/
-├── SKILL.md (12.7k - core workflow)
-├── run.js (universal executor)
-├── lib/helpers.js (utilities)
-├── API_REFERENCE.md (15.5k - full Playwright API)
-├── package.json
-└── ANALYSIS.md (our detailed analysis)
-```
-
-**Performance**:
-- Simple tests: SKILL.md only (~3.2k tokens)
-- Complex: SKILL.md + API_REFERENCE (~7.2k tokens)
-- Progressive disclosure for efficiency
-
-**Integration Ideas**:
-- Test user stories from agile-master
-- Automated QA for feature implementations
-- Visual regression in CI/CD
-
-**Setup**:
+**Usage**:
 ```bash
-cd .claude/skills/playwright-skill
-npm run setup  # Installs Playwright + Chromium
+/skill agile-jira
+# docs/stories/ 디렉토리 자동 스캔
 ```
 
----
-
-## Reference Skills (1)
-
-### 8. 📖 skill-creator
-**Path**: `.claude/skills/skill-creator/`
-**Type**: Meta-Skill (Skill Development Guide)
-**Status**: Reference (Anthropic Official)
-**Source**: https://github.com/anthropics/skills
-
-**What It Does**:
-Official Anthropic guide for creating effective skills. Comprehensive framework for skill development following best practices.
-
-**Key Principles**:
-1. **Progressive Disclosure** (3-tier loading)
-   - Metadata (always)
-   - SKILL.md (when triggered)
-   - Bundled resources (when needed)
-
-2. **6-Step Creation Process**:
-   - Understanding (gather examples)
-   - Planning (identify reusable content)
-   - Initializing (create structure)
-   - Editing (write SKILL.md + resources)
-   - Packaging (validate)
-   - Iterating (refine)
-
-3. **Bundled Resources**:
-   - `scripts/` - Executable code
-   - `references/` - Detailed docs (loaded as needed)
-   - `assets/` - Templates, files (not loaded to context)
-
-**When to Use**:
-- Creating new skills
-- Improving existing skills
-- Understanding skill architecture
-- Following Anthropic best practices
+**Requirements**:
+- `.env` 파일에 Jira 설정 필요:
+  ```bash
+  JIRA_BASE_URL=https://your-domain.atlassian.net
+  JIRA_EMAIL=your-email@example.com
+  JIRA_API_TOKEN=your_token
+  JIRA_PROJECT_KEY=NEXUS
+  ```
 
 **Files**:
-- SKILL.md (209 lines - complete guide)
+- `SKILL.md` - API 통합 워크플로우
+- `references/jira-api-reference.md` - Jira REST API 문서
+
+**When to Use**:
+- User Stories 완성 후
+- Sprint 시작 전
+- 백로그를 Jira로 동기화할 때
 
 ---
 
-## Skills Summary Table
+## 🎨 Frontend Development
 
-| Skill | Type | Size | Files | Integrations | Status |
-|-------|------|------|-------|--------------|--------|
-| **agile-master** | PM/Automation | 2.8k words | 3 | Jira MCP | Production v1 |
-| **agile-master-v2** | PM/Automation | 1.1k + refs | 4 | Jira MCP | Testing v2 |
-| **agile-docs-framework** | Documentation | 17k | 1 | - | Production |
-| **deep-research** | AI Research | 346 lines + refs | 3 | 8 Search APIs, LangGraph | Production v2 |
-| **database-designer** | DB Architecture | refs | 3 | 15 Databases | Production v2 |
-| **langgraph-multi-agent** | Multi-Agent | 174 lines + refs | 5 | LangGraph | Production v2 |
-| **playwright-skill** | Testing | 12.7k + 15.5k ref | 6 | Playwright | Production |
-| **skill-creator** | Reference | 209 lines | 1 | - | Reference |
+### 4. fullstack-frontend (Next.js 14)
 
----
+**Purpose**: Next.js 14 + shadcn/ui 프론트엔드 템플릿 생성
 
-## Skill Architecture Patterns
+**Key Features**:
+- **Next.js 14 App Router** - 최신 파일 기반 라우팅
+- **shadcn/ui** - Radix UI + Tailwind CSS 컴포넌트
+- **TypeScript** - 타입 안전성
+- **React Query** - 데이터 페칭 및 캐싱
+- **Vercel 배포 최적화**
 
-### Pattern 1: Monolithic (Original)
-
-**Example**: agile-master v1
-
+**Template Structure**:
 ```
-skill/
-└── SKILL.md (all content in one file)
-```
-
-**Pros**: Simple, everything in one place
-**Cons**: Large context load, hard to maintain
-
----
-
-### Pattern 2: Progressive Disclosure (Skill-Creator)
-
-**Example**: agile-master-v2, playwright-skill
-
-```
-skill/
-├── SKILL.md (lean core)
-├── references/ (detailed guides)
-├── assets/ (templates)
-└── scripts/ (executables)
+nexus-frontend/
+├── app/
+│   ├── layout.tsx          # Root Layout
+│   ├── page.tsx            # Home Page
+│   ├── properties/         # 매물 페이지
+│   └── admin/              # 관리자 페이지
+├── components/
+│   ├── ui/                 # shadcn/ui 컴포넌트
+│   └── features/           # 기능별 컴포넌트
+├── lib/
+│   ├── api.ts              # API 클라이언트
+│   └── utils.ts            # 유틸리티
+└── types/
+    └── index.ts            # TypeScript 타입
 ```
 
-**Pros**: Context-efficient, scalable, maintainable
-**Cons**: More complex structure
-
-**Recommendation**: Use for production skills
-
----
-
-### Pattern 3: Reference-Heavy
-
-**Example**: deep-research
-
-```
-skill/
-├── SKILL.md (comprehensive guide)
-└── [References to src/agents/ implementation]
-```
-
-**Pros**: Complete documentation, real code examples
-**Cons**: Large SKILL.md
-
----
-
-## Integration Map
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Development Workflow                  │
-└─────────────────────────────────────────────────────────┘
-
-    agile-master
-         │
-         ├─ Creates PRD
-         ├─ Generates User Stories with AC
-         └─ Creates Jira Tickets
-              │
-              ├─ [Developer Implements Feature]
-              │
-              ├─ playwright-skill
-              │    └─ Tests AC automatically
-              │
-              ├─ [QA Manual Testing]
-              │
-              └─ [Deploy]
-
-┌─────────────────────────────────────────────────────────┐
-│                    Research Workflow                     │
-└─────────────────────────────────────────────────────────┘
-
-    deep-research
-         │
-         ├─ Searches web (8 APIs: Jina, Serper, Tavily, Exa, etc.)
-         ├─ Extracts structured data (any domain)
-         └─ Reflects on quality
-              │
-              └─ database-designer
-                   └─ Designs DB schema for storing results
-
-┌─────────────────────────────────────────────────────────┐
-│                    Documentation Workflow                │
-└─────────────────────────────────────────────────────────┘
-
-    agile-docs-framework
-         │
-         └─ Provides templates & guidance
-              │
-              └─ agile-master
-                   └─ Uses templates to generate docs
-```
-
----
-
-## Quick Start Guide
-
-### Using Agile Master
-
+**Usage**:
 ```bash
-# Ensure Jira MCP is configured
-ls .mcp.json
+# 1. 템플릿 복사
+/skill fullstack-frontend
 
-# Use the skill
-/skill agile-master
-"Add OAuth authentication to login page"
+# 2. 프로젝트 이름 입력 (대화형)
+→ "nexus-frontend"
 
-# Follow interactive prompts
+# 3. 자동 실행:
+#    - 디렉토리 생성
+#    - npm 패키지 설치
+#    - shadcn/ui 초기화
+#    - .env.local 생성
 ```
 
-### Using Playwright Skill
+**Generated Files**:
+- `package.json` - Next.js 15, React 19, Tailwind CSS
+- `tsconfig.json` - TypeScript 설정
+- `next.config.js` - Next.js 설정
+- `tailwind.config.ts` - Tailwind 커스터마이징
+- `components.json` - shadcn/ui 설정
 
+**API Integration**:
+- `lib/api.ts`에 FastAPI 엔드포인트 설정:
+  ```typescript
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+  ```
+
+**When to Use**:
+- 프로젝트 초기 Frontend 구조 생성 시
+- 백엔드 API 준비 완료 후
+- 프로토타입 빠르게 만들 때
+
+**References**:
+- `references/api-integration.md` - FastAPI 연동 가이드
+- `references/deployment.md` - Vercel 배포 가이드
+
+---
+
+## 🧪 Testing
+
+### 5. playwright-skill (E2E Testing)
+
+**Purpose**: Playwright 기반 브라우저 자동화 및 E2E 테스트
+
+**Key Features**:
+- 개발 서버 자동 감지
+- 깔끔한 테스트 스크립트 생성 (`/tmp` 저장)
+- 크로스 브라우저 테스트 (Chrome, Firefox, Safari)
+- 스크린샷 캡처
+- 반응형 디자인 검증
+- 로그인 플로우 테스트
+
+**Use Cases**:
+- 웹사이트 테스트
+- 폼 자동 입력
+- UX 검증
+- 링크 체크
+- 반응형 검증
+
+**Usage**:
 ```bash
-# Setup (first time only)
-cd .claude/skills/playwright-skill
-npm run setup
+# 1. 매물 목록 페이지 테스트
+/skill playwright-skill
 
-# Use the skill (no explicit invocation needed)
-"Test if the login form works on localhost:3000"
+→ "Test property listing page with filters"
+
+# 2. 생성된 테스트 실행
+node /tmp/test-property-listing.js
 ```
 
-### Using Deep Research
+**Example Output**:
+```javascript
+// /tmp/test-property-listing.js
+const { chromium } = require('playwright');
 
+(async () => {
+  const browser = await chromium.launch({ headless: false });
+  const page = await browser.newPage();
+
+  await page.goto('http://localhost:3000/properties');
+  await page.fill('input[name="location"]', '강남구');
+  await page.click('button[type="submit"]');
+  await page.waitForSelector('.property-card');
+
+  console.log('✅ Test passed: Property filtering works');
+
+  await browser.close();
+})();
+```
+
+**When to Use**:
+- UI 개발 완료 후
+- 중요한 사용자 플로우 검증
+- 배포 전 통합 테스트
+- 회귀 테스트 자동화
+
+**Files**:
+- `SKILL.md` - 워크플로우
+- `API_REFERENCE.md` - Playwright API
+- `ANALYSIS.md` - 테스트 전략
+
+---
+
+## 🛠️ Utilities
+
+### 6. skill-creator
+
+**Purpose**: 새로운 Claude Code 스킬 생성 도구
+
+**Key Features**:
+- 스킬 템플릿 자동 생성
+- Skill-Creator 패턴 준수
+- Progressive Disclosure 구조
+- References 및 Assets 디렉토리 자동 생성
+
+**Usage**:
 ```bash
-# Use the skill
-/skill deep-research
-"Research Anthropic company information"
+/skill skill-creator "database-query-builder"
+```
+
+**When to Use**:
+- 반복적인 작업을 스킬로 만들 때
+- 팀 표준 워크플로우 자동화
+- 커스텀 개발 도구 필요 시
+
+---
+
+### 7. workspace-transplant
+
+**Purpose**: 멀티에이전트 워크스페이스 패턴 이식
+
+**Key Features**:
+- LangGraph 에이전트 패턴 분석
+- A2A 프로토콜 마이그레이션
+- 프롬프트 중앙화
+- Rate Limiting 패턴 이식
+
+**Use Cases**:
+- 멀티에이전트 아키텍처 마이그레이션
+- 재사용 가능한 컴포넌트 추출
+- A2A 시스템 전환
+
+**When to Use**:
+- 기존 에이전트 코드 재사용
+- 아키텍처 패턴 참고
+- 분산 시스템 설계 시
+
+**Note**: Nexus Realty는 단일 모놀리식 구조로, 현재는 참고용
+
+---
+
+## 🚀 Recommended Workflow
+
+### Phase 1: Planning (Agile Skills)
+```bash
+# 1. PRD 작성
+/skill agile-product "매물 검색 API"
+
+# 2. User Stories 생성
+/skill agile-stories
+
+# 3. Jira 티켓 생성
+/skill agile-jira
+```
+
+### Phase 2: Frontend Setup
+```bash
+# Next.js 프로젝트 생성
+/skill fullstack-frontend
+```
+
+### Phase 3: Development
+```bash
+# (수동) Backend API 개발 (FastAPI)
+# (수동) Frontend 페이지 개발 (Next.js)
+```
+
+### Phase 4: Testing
+```bash
+# E2E 테스트 작성
+/skill playwright-skill
 ```
 
 ---
 
-## Maintenance
+## 📊 Skills Summary
 
-### Adding New Skills
-
-1. Create skill directory in `.claude/skills/`
-2. Follow skill-creator pattern (SKILL.md + bundled resources)
-3. Document in this collection
-4. Test with sample tasks
-5. Add to git
-
-### Updating Existing Skills
-
-1. Edit specific files (SKILL.md or references/)
-2. Update version in SKILL.md metadata
-3. Document changes
-4. Test thoroughly
-5. Commit to git
-
-### Removing Skills
-
-1. Move to `.claude/skills/archive/`
-2. Update this collection document
-3. Notify team
+| Skill | Type | Frequency | Automation Level |
+|-------|------|-----------|------------------|
+| agile-product | Planning | 매 기능마다 | 🤖🤖🤖🤖⚪ 80% |
+| agile-stories | Planning | 매 기능마다 | 🤖🤖🤖🤖🤖 100% |
+| agile-jira | Planning | 매 Sprint마다 | 🤖🤖🤖🤖🤖 100% |
+| fullstack-frontend | Setup | 프로젝트 초기 | 🤖🤖🤖🤖⚪ 80% |
+| playwright-skill | Testing | 주요 기능마다 | 🤖🤖🤖⚪⚪ 60% |
+| skill-creator | Utility | 필요시 | 🤖🤖🤖🤖⚪ 80% |
+| workspace-transplant | Utility | 거의 없음 | 🤖🤖⚪⚪⚪ 40% |
 
 ---
 
-## Best Practices
+## 🗂️ Archived Skills
 
-### From Official skill-creator
+다음 스킬들은 Nexus Realty 프로젝트에 불필요하여 아카이브되었습니다:
 
-1. **Progressive Disclosure**: Keep SKILL.md <5k words, move details to references/
-2. **Bundled Resources**: Use scripts/, references/, assets/ effectively
-3. **Clear Workflows**: Provide step-by-step critical workflows
-4. **Helper Functions**: Extract common patterns
-5. **Path Independence**: Handle multiple installation locations
+**문서 처리 (4개)**:
+- `docx` - Word 문서 처리
+- `pdf` - PDF 생성/변환
+- `pptx` - PowerPoint 처리
+- `xlsx` - Excel 처리
 
-### From Community (playwright-skill)
+**멀티에이전트 (3개)**:
+- `database-designer` - DB 스키마 자동 설계
+- `deep-research` - 웹 검색 기반 리서치
+- `langgraph-multi-agent` - LangGraph 멀티에이전트 패턴
 
-6. **Visible by Default**: Easier debugging (headless: false)
-7. **Auto-Detection**: Find dev servers automatically
-8. **Safe Execution**: Write to /tmp, not project directories
-9. **Common Patterns**: Provide 7-10 ready-to-use examples
-10. **Complete API Reference**: Separate file, loaded when needed
-
-### From Our Experience
-
-11. **Integration First**: Design skills to work together
-12. **Version Control**: Keep skills in git
-13. **Documentation**: Comprehensive ANALYSIS.md for complex skills
-14. **Testing**: Verify skills work before committing
+**위치**: `archive/multi-agent-workspace/.claude/skills/`
 
 ---
 
-## Resources
+## 📖 Additional Resources
 
-### Official
+### Internal Guides
+- `.claude/AGILE_SKILLS_V2.md` - Agile 3종 상세 가이드
+- `CLAUDE.md` - Nexus Realty 기술 문서
+- `README.md` - 프로젝트 개요
 
-- **Anthropic Skills Repo**: https://github.com/anthropics/skills
-- **Claude Code Docs**: https://docs.claude.com/en/docs/claude-code/skills
-- **Skill Best Practices**: https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices
-
-### Community
-
-- **playwright-skill**: https://github.com/lackeyjb/playwright-skill
-- **Awesome Claude Skills**: https://github.com/travisvn/awesome-claude-skills
-
-### Our Documentation
-
-- **Skills Comparison**: `.claude/SKILLS_COMPARISON.md` (Official vs Our)
-- **Version Comparison**: `.claude/SKILL_VERSIONS_COMPARISON.md` (v1 vs v2)
-- **MCP Setup**: `.claude/MCP_SETUP.md` (Jira integration)
+### External References
+- [Next.js 15 Docs](https://nextjs.org/docs)
+- [FastAPI Docs](https://fastapi.tiangolo.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Playwright](https://playwright.dev/)
 
 ---
 
-## Future Skills to Consider
-
-### High Priority
-
-1. **github-integration-skill** - Auto-create PRs, link to Jira
-2. **code-review-skill** - Automated code review with best practices
-3. **deployment-automation-skill** - CI/CD workflow automation
-
-### Medium Priority
-
-4. **api-testing-skill** - API endpoint testing (Postman/Insomnia-like)
-5. **database-migration-skill** - Schema migration automation
-6. **security-audit-skill** - Security vulnerability scanning
-
-### Low Priority
-
-7. **performance-testing-skill** - Load testing, benchmarking
-8. **accessibility-testing-skill** - WCAG compliance checking
-9. **i18n-management-skill** - Translation and localization
-
----
-
-**Total Lines of Documentation**: ~100,000+
-**Total Functionality**: Project Management + AI Research + Testing + Monitoring + Multi-Agent Systems
-**Integration Level**: High (skills work together seamlessly)
-
-**Next Review**: Monthly or when new skills are added
+**Last Updated**: 2025-10-28 by Claude Code
+**Nexus Realty** v1.0.0
