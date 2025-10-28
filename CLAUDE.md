@@ -1,23 +1,34 @@
-# Company Search Agent - 기술 문서
+# Nexus Realty - 기술 문서
 
-> A2A 기반 분산 멀티 에이전트 시스템 - 프로덕션 레벨 기업 리서치 자동화
+> 사무실 매물 검색 플랫폼 (네이버 부동산 스타일)
 
-**최종 업데이트**: 2025-10-22
-**현재 버전**: v2.0.0 (LangGraph 모놀리식)
-**다음 버전**: v3.0.0 (A2A 분산 시스템) ⭐ 설계 완료
-**프로젝트**: Production-Ready Company Research Automation
+**최종 업데이트**: 2025-10-28
+**현재 버전**: v1.0.0 (초기 개발)
+**프로젝트**: 바이브 코딩 기반 풀스택 웹서비스
+**개발 방식**: 🤖 Claude Code 단독 개발 (바이브 코딩 100%)
+
+---
+
+## ⚠️ 핵심 개발 원칙
+
+**바이브 코딩 (Vibe Coding) 우선**:
+- 모든 개발은 **Claude Code로만** 진행
+- 수동 코딩 최소화, AI 기반 자동화 최대화
+- Agile 스킬 활용한 체계적 백로그 관리
+- 빠른 프로토타이핑 → 점진적 개선
 
 ---
 
 ## 📋 목차
 
 1. [Executive Summary](#executive-summary)
-2. [v2.0 현재 시스템](#v20-현재-시스템)
-3. [v3.0 A2A 아키텍처](#v30-a2a-아키텍처)
-4. [기술 스택](#기술-스택)
-5. [구현 상황](#구현-상황)
-6. [마이그레이션 로드맵](#마이그레이션-로드맵)
-7. [참고 문서](#참고-문서)
+2. [프로젝트 개요](#프로젝트-개요)
+3. [기술 스택](#기술-스택)
+4. [시스템 아키텍처](#시스템-아키텍처)
+5. [데이터베이스](#데이터베이스)
+6. [개발 환경](#개발-환경)
+7. [배포 전략](#배포-전략)
+8. [참고 문서](#참고-문서)
 
 ---
 
@@ -25,526 +36,411 @@
 
 ### 프로젝트 목표
 
-**자동화된 기업 리서치 시스템**: 웹 검색 + 구조화된 데이터 추출 + 품질 보장
+**사무실 매물 검색 플랫폼**: 기업 담당자를 위한 스마트 오피스 매칭 서비스
 
-**타겟**: 중소·중견 비상장 기업 (Private SMEs)
-- 직접 정보 부족 → **간접 소스 전략** (공시자료, VC 포트폴리오 활용)
-- 비정형 데이터 중심 → **AI 기반 추출**
-- Schema-driven → **사용자 정의 스키마 지원**
+**타겟 사용자**:
+- 🏢 기업 담당자 (사무실을 찾는 고객)
+- 👨‍💼 사무실 관리 직원 (매물 관리)
+- 👑 플랫폼 관리자 (시스템 운영)
 
-### 시스템 진화
+### 핵심 기능
 
-```
-v1.0 (PoC)                    v2.0 (현재)                 v3.0 (설계 완료)
-┌──────────┐                 ┌──────────┐                ┌──────────────┐
-│ 기본     │  →  개선  →     │ LangGraph│  →  확장  →    │ A2A 분산     │
-│ 구현     │                 │ 모놀리식  │                │ 시스템       │
-└──────────┘                 └──────────┘                └──────────────┘
+1. **매물 검색 및 조회** (네이버 부동산 스타일)
+   - 지역/면적/가격 기반 검색
+   - 상세 필터링 (교통, 편의시설 등)
+   - 지도 기반 검색
 
-- 3개 phase                  - Rate limiting            - 병렬 처리
-- 순차 처리                  - 토큰 제한                - 독립 확장
-- 기본 기능                  - 프롬프트 중앙화          - 자동 복구
-                            - 중복 제거                - 비용 최적화
+2. **사용자 관리**
+   - 기업 회원가입/로그인
+   - 관심 매물 즐겨찾기
+   - 문의/상담 요청
 
-처리: 1개씩                  처리: 1개씩                처리: 100+ 동시
-시간: N/A                    시간: 45-90초/회사         시간: 90초/1000개
-비용: 높음                   비용: 중간                 비용: 최저 (91% 절감)
-```
+3. **관리자 기능**
+   - 매물 관리 (등록/수정/삭제)
+   - 사용자 관리
+   - 통계 및 분석
 
-### 핵심 결정
+### 개발 방식
 
-**v3.0 A2A 아키텍처로 전환 결정** (2025-10-22)
-
-**이유**:
-1. **프로덕션 요구사항**: 1,000+ 회사 배치 처리 필요
-2. **성능**: 12시간 → **90초** (480배 빠름)
-3. **비용**: 월 $5,222 → **$464** (91% 절감)
-4. **확장성**: 독립적 에이전트 스케일링
+**🤖 100% 바이브 코딩**:
+- Claude Code로만 개발 (수동 코딩 금지)
+- Agile 스킬로 PRD → User Story → Jira 티켓 자동화
+- fullstack-frontend 스킬로 Next.js 템플릿 자동 생성
+- 빠른 프로토타이핑 → 점진적 개선
 
 ---
 
-## v2.0 현재 시스템
+## 프로젝트 개요
 
-### 아키텍처
+### 비즈니스 모델
 
-**LangGraph 모놀리식**:
+**B2B 매물 매칭 플랫폼**:
+- 네이버 부동산 크롤링 데이터 활용
+- 기업 고객 대상 사무실 매물 제공
+- 중개 수수료 기반 수익 모델
 
-```python
-┌────────────────────────────────────┐
-│     단일 Python 프로세스            │
-│                                    │
-│  ┌──────────┐                     │
-│  │Research  │ (쿼리 생성 + 검색)   │
-│  │  Phase   │                     │
-│  └────┬─────┘                     │
-│       ↓                            │
-│  ┌──────────┐                     │
-│  │Extract   │ (JSON 추출)         │
-│  │  Phase   │                     │
-│  └────┬─────┘                     │
-│       ↓                            │
-│  ┌──────────┐                     │
-│  │Reflect   │ (품질 평가)         │
-│  │  Phase   │                     │
-│  └────┬─────┘                     │
-│       │                            │
-│   ┌───┴────┐                      │
-│   ↓        ↓                      │
-│ Complete  Iterate                 │
-└────────────────────────────────────┘
+### 차별점
 
-In-memory State (ResearchState)
-순차 실행
-단일 배포 단위
-```
-
-### 성능
-
-| 메트릭 | 값 |
-|--------|-----|
-| **처리 시간** | 45-90초/회사 |
-| **동시 처리** | 1개 (순차) |
-| **일일 처리량** | ~1,920 (80/h × 24h) |
-| **확장성** | Vertical only (CPU/RAM) |
-
-### 장점 ✅
-
-- 간단한 구조
-- 쉬운 디버깅
-- 빠른 개발
-- In-memory state (빠른 접근)
-
-### 한계 ❌
-
-- 순차 처리만 가능
-- 확장성 제한
-- 단일 장애점
-- **1,000개 배치 처리 시 12-25시간 소요** ⚠️
-
----
-
-## v3.0 A2A 아키텍처
-
-### 전체 구조
-
-```
-┌─────────────────────────────────────────────┐
-│            API Gateway (FastAPI)             │
-│  - 인증/권한                                 │
-│  - Rate limiting                             │
-└──────────────────┬──────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────────┐
-│        Coordinator Agent (오케스트레이터)     │
-│  - 워크플로우 관리                           │
-│  - 로드 밸런싱                               │
-│  - 에러 복구                                 │
-└──┬────────────┬────────────┬────────────────┘
-   │ HTTP A2A   │ HTTP A2A   │ HTTP A2A
-   ↓            ↓            ↓
-┌────────┐  ┌─────────┐  ┌──────────┐
-│Research│  │Extract  │  │Reflection│
-│Agents  │  │Agents   │  │Agents    │
-│        │  │         │  │          │
-│10 pods │  │5 pods   │  │2 pods    │
-└────────┘  └─────────┘  └──────────┘
-
-각 에이전트:
-- 독립 HTTP 서비스
-- Agent Card (/.well-known/agent.json)
-- A2A 프로토콜 통신
-- 독립 배포/확장
-```
-
-### Agent2Agent (A2A) 프로토콜
-
-**Discovery**:
-```bash
-GET http://research-agent:5001/.well-known/agent.json
-→ Agent Card (capabilities, skills, I/O schema)
-```
-
-**Task Execution**:
-```bash
-POST http://research-agent:5001/tasks/send
-{
-  "id": "task-123",
-  "message": {
-    "role": "user",
-    "parts": [{"text": "{...input...}"}]
-  }
-}
-
-→ Response
-{
-  "id": "task-123",
-  "status": {"state": "completed"},
-  "messages": [...]
-}
-```
-
-### 성능 (v3.0)
-
-| 메트릭 | v2.0 | v3.0 | 개선 |
-|--------|------|------|------|
-| **1,000 companies** | 12-25시간 | **90초** | **480-1000x** ⚡ |
-| **처리량/시간** | 80 | **400** | **5x** |
-| **동시 처리** | 1 | **100+** | **100x** |
-| **확장성** | Vertical | **Horizontal** | ♾️ |
-| **장애 복구** | 수동 | **자동** | ✅ |
-
-### 비용 (v3.0 최적화)
-
-| 단계 | 월 비용 | 처리량 | 용도 |
-|------|---------|--------|------|
-| **Phase 0 (PoC)** | $366 | 10/h | 개발/테스트 |
-| **Phase 1 (권장)** | **$464** ⭐ | 50/h | 스타트업 |
-| Phase 2 (성장) | $1,400 | 200/h | 확장 |
-| Phase 3 (엔터프라이즈) | $3,800 | 800/h | 대규모 |
-
-**Phase 1 구성** (Lambda + Fargate Spot + Aurora Serverless):
-- 91% 비용 절감 ($5,222 → $464)
-- 병렬 처리 가능
-- 자동 복구
-
-**상세**: [COST_OPTIMIZATION.md](./COST_OPTIMIZATION.md)
+- 🎯 **기업 특화**: 일반 주거용이 아닌 사무실 전문
+- 📊 **스마트 매칭**: 기업 규모/업종 기반 추천
+- 🗺️ **입지 분석**: 교통/편의시설 접근성 분석
 
 ---
 
 ## 기술 스택
 
-### v2.0 (현재)
+### v1.0 (현재 계획)
 
-| 카테고리 | 기술 |
-|---------|------|
-| **Framework** | LangGraph, LangChain |
-| **LLM** | Claude Sonnet 4.5 ($3/$15 per 1M) |
-| **Search** | Tavily API ($0.005/쿼리) |
-| **Language** | Python 3.10+ |
-| **State** | In-memory (TypedDict) |
-| **Config** | Pydantic |
+**프론트엔드**:
+| 기술 | 선택 이유 |
+|------|----------|
+| **Next.js 15** | SSR/SSG, App Router, 성능 최적화 |
+| **React 19** | 최신 기능 활용 |
+| **TypeScript** | 타입 안정성 |
+| **Tailwind CSS** | 빠른 UI 개발 |
+| **Shadcn UI** | 고품질 컴포넌트 |
 
-### v3.0 (설계 완료)
+**백엔드**:
+| 기술 | 선택 이유 |
+|------|----------|
+| **FastAPI** | Python 기반 고성능 API |
+| **Pydantic** | 데이터 검증 |
+| **SQLAlchemy** | ORM |
+| **PostgreSQL** | 기존 DB 활용 |
 
-| 카테고리 | 기술 | 비고 |
-|---------|------|------|
-| **Protocol** | A2A (Agent2Agent) | HTTP + JSON-RPC |
-| **Compute** | ECS Fargate, Lambda | Spot + Serverless |
-| **Database** | Aurora Serverless v2 | 자동 스케일 |
-| **Cache** | ElastiCache Redis | Task queue + 캐시 |
-| **Storage** | S3 | 원본 데이터 |
-| **Network** | VPC, VPC Endpoints | NAT 제거 |
-| **Orchestration** | FastAPI (Coordinator) | 워크플로우 관리 |
-| **Monitoring** | CloudWatch, Prometheus | 메트릭 + 알람 |
-| **IaC** | Terraform | 완전 자동화 |
+**인프라**:
+| 기술 | 선택 이유 |
+|------|----------|
+| **Docker** | 컨테이너화 |
+| **Docker Compose** | 로컬 개발 환경 |
+| **Vercel** | Frontend 배포 (예정) |
+| **AWS/Cloud** | Backend 배포 (예정) |
 
 ---
 
-## 구현 상황
+## 시스템 아키텍처
 
-### v2.0 완료 항목 ✅
+### 전체 구조 (모노레포)
 
-#### Core System
+```
+nexus-realty/
+├── nexus-api/              # Backend (FastAPI)
+│   ├── app/
+│   │   ├── api/           # API 엔드포인트
+│   │   ├── models/        # SQLAlchemy 모델
+│   │   ├── schemas/       # Pydantic 스키마
+│   │   ├── services/      # 비즈니스 로직
+│   │   └── core/          # 설정, 유틸리티
+│   ├── main.py
+│   └── requirements.txt
+│
+├── nexus-frontend/         # Frontend (Next.js)
+│   ├── app/               # App Router
+│   ├── components/        # React 컴포넌트
+│   ├── lib/               # 유틸리티
+│   ├── types/             # TypeScript 타입
+│   └── package.json
+│
+├── docker-compose.yml     # 로컬 개발 환경
+├── package.json           # 루트 통합 스크립트
+└── README.md
+```
 
-- [x] Research Phase (`research.py`)
-  - LLM 기반 쿼리 생성
-  - Tavily API 통합
-  - 구조화된 리서치 노트 작성
+### API 설계
 
-- [x] Extraction Phase (`extraction.py`)
-  - JSON 데이터 추출
-  - Schema validation
-  - Confidence scoring
+**목표**: 기존 DB에 RESTful API 레이어 추가
 
-- [x] Reflection Phase (`reflection.py`)
-  - 품질 평가
-  - 누락 필드 식별
-  - Follow-up 쿼리 생성
+**주요 엔드포인트**:
+```
+# 매물 (Properties)
+GET    /api/properties              # 목록 조회 (페이징, 필터링)
+GET    /api/properties/{id}         # 상세 조회
+POST   /api/properties/search       # 고급 검색 (지역, 면적, 가격 등)
 
-- [x] Graph Orchestration (`graph.py`)
-  - Research → Extract → Reflect 루프
-  - Conditional routing
-  - Max iterations
+# 인증 (Auth)
+POST   /api/auth/register           # 기업 회원가입
+POST   /api/auth/login              # 로그인 (JWT)
+POST   /api/auth/logout             # 로그아웃
 
-#### 프로덕션 개선 (2025-10-22) ⭐
+# 사용자 (Users)
+GET    /api/users/me                # 내 정보
+GET    /api/users/favorites         # 즐겨찾기 목록
+POST   /api/users/favorites/{id}    # 즐겨찾기 추가
+DELETE /api/users/favorites/{id}    # 즐겨찾기 삭제
 
-- [x] **Prompts 중앙화** (`prompts.py`)
-  - 4개 템플릿 통합
-  - 버전 관리 용이
+# 문의 (Inquiries)
+POST   /api/inquiries               # 문의 등록
+GET    /api/inquiries               # 내 문의 목록
+GET    /api/inquiries/{id}          # 문의 상세
 
-- [x] **Utils 분리** (`utils.py`)
-  - deduplicate_sources()
-  - format_sources() (토큰 제한)
-  - calculate_completeness()
-  - 8개 재사용 함수
+# 관리자 (Admin)
+GET    /api/admin/properties        # 매물 관리
+POST   /api/admin/properties        # 매물 등록
+PUT    /api/admin/properties/{id}   # 매물 수정
+DELETE /api/admin/properties/{id}   # 매물 삭제
+GET    /api/admin/users             # 사용자 관리
+GET    /api/admin/stats             # 통계 대시보드
+```
 
-- [x] **LLM 중앙화** (`llm.py`)
-  - InMemoryRateLimiter (0.8 req/sec)
-  - 작업별 최적화 (temperature)
-  - get_llm_for_research/extraction/reflection
+---
 
-- [x] **토큰 관리**
-  - max_tokens_per_source=1,000
-  - Context overflow 방지
+## 데이터베이스
 
-- [x] **URL 중복 제거**
-  - API 비용 절감
-  - 불필요한 호출 방지
+### ✅ 기존 DB 활용
 
-#### 예제 및 문서
+**중요**: 네이버 부동산 매물 데이터가 **이미 PostgreSQL DB에 존재**합니다.
 
-- [x] 기본 예제 (`examples/basic_research.py`)
-- [x] 커스텀 스키마 (`examples/custom_schema.py`)
-- [x] 스트리밍 (`examples/streaming_example.py`)
-- [x] README.md (v2.0)
-- [x] 상세 가이드 (README_DEEP_RESEARCH.md)
-- [x] LLM 가격 비교 (LLM_CLOUD_PRICING_2025.md)
-- [x] Claude Code 스킬 (4개)
+**현황**:
+- ✅ 매물 데이터 크롤링 완료 (네이버 부동산)
+- ⚠️ 이전 프로젝트 스키마로 구성됨
+- 🔧 Nexus Realty에 맞게 일부 테이블 수정 필요
+- 🎯 **목표**: 기존 데이터에 API 레이어 추가
 
-#### 분석 및 설계 (2025-10-22) ⭐ NEW
+### 주요 테이블 (예상 구조)
 
-- [x] Google ADK 분석 (GOOGLE_ADK_ANALYSIS.md)
-- [x] A2A 프로토콜 분석 (A2A_ARCHITECTURE.md)
-- [x] 인프라 설계 (INFRASTRUCTURE_DESIGN.md)
-- [x] 비용 최적화 (COST_OPTIMIZATION.md)
-- [x] Terraform 코드 (완전 자동화)
+```sql
+-- 매물 정보
+properties
+├── id (PK)
+├── title
+├── address
+├── area_sqm
+├── monthly_rent
+├── deposit
+├── latitude
+├── longitude
+└── ...
 
-### v3.0 구현 예정 항목
+-- 사용자
+users
+├── id (PK)
+├── email
+├── company_name
+├── role (customer, staff, admin)
+└── ...
 
-#### Phase 1: Hybrid Wrapper (2주)
+-- 즐겨찾기
+favorites
+├── id (PK)
+├── user_id (FK)
+├── property_id (FK)
+└── created_at
 
-- [ ] Research Agent A2A 래퍼 (Flask)
-- [ ] Extraction Agent A2A 래퍼
-- [ ] Reflection Agent → Lambda 전환
-- [ ] Coordinator FastAPI 서버
-- [ ] Docker Compose 설정
-- [ ] 로컬 테스트 (10개 회사)
+-- 문의
+inquiries
+├── id (PK)
+├── user_id (FK)
+├── property_id (FK)
+├── message
+└── status
+```
 
-#### Phase 2: 인프라 구축 (2주)
+---
 
-- [ ] Terraform 인프라 배포
-  - VPC + Subnets
-  - ECS Fargate 클러스터
-  - Aurora Serverless v2
-  - ElastiCache Redis
-  - VPC Endpoints
+## 개발 환경
 
-- [ ] CI/CD 파이프라인
-  - GitHub Actions
-  - ECR 이미지 빌드
-  - 자동 배포
+### 로컬 개발 (Docker Compose)
 
-#### Phase 3: 성능 최적화 (2주)
+```bash
+# 전체 스택 실행
+docker-compose up
 
-- [ ] 부하 테스트 (100 → 1,000 companies)
-- [ ] Auto-scaling 튜닝
-- [ ] 캐싱 최적화 (90% cache hit)
-- [ ] Connection pooling
-- [ ] 병목 분석 및 해결
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000
+# DB: PostgreSQL:5432
+```
 
-#### Phase 4: 프로덕션 배포 (1주)
+### 환경 변수 (.env)
 
-- [ ] Staging 검증
-- [ ] Production 배포 (Blue-Green)
-- [ ] 모니터링 대시보드
-- [ ] 운영 문서
-- [ ] 온콜 프로세스
+```bash
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/nexus_realty
+
+# JWT
+JWT_SECRET=your-secret-key
+JWT_ALGORITHM=HS256
+
+# CORS
+CORS_ORIGINS=http://localhost:3000
+
+# API
+API_PREFIX=/api
+```
+
+---
+
+## 배포 전략
+
+### ⚡ 프론트엔드/백엔드 분리 배포
+
+**Frontend 배포 (Vercel)**:
+```bash
+cd nexus-frontend
+vercel --prod
+# URL: https://nexus-realty.vercel.app
+```
+
+**Backend 배포 (클라우드)**:
+- 배포 플랫폼은 운영 문서 확인 (docs/ 디렉토리)
+- 옵션: AWS ECS, Google Cloud Run, Railway, Render 등
+- Docker 컨테이너 기반 배포 권장
+
+**로컬 개발**:
+```bash
+# 전체 스택 실행 (Frontend + Backend + DB)
+docker-compose up
+```
+
+---
+
+## 개발 워크플로우 (바이브 코딩)
+
+### 🤖 Claude Code 스킬 활용
+
+**1. Agile 워크플로우** (자동화):
+```bash
+# PRD 작성
+/skill agile-product "매물 검색 필터링 기능"
+
+# User Stories 자동 생성
+/skill agile-stories
+
+# Jira 티켓 자동 생성
+/skill agile-jira
+```
+
+**2. 프론트엔드 개발** (자동화):
+```bash
+# Next.js 14 템플릿 자동 생성
+/skill fullstack-frontend
+
+# 컴포넌트/페이지 자동 생성
+# (스킬 내부 기능 활용)
+```
+
+**3. E2E 테스트** (자동화):
+```bash
+# Playwright 테스트 자동 생성
+/skill playwright-skill
+```
+
+**활용 가능한 스킬** (총 12개):
+| 카테고리 | 스킬 | 용도 |
+|---------|------|------|
+| **Agile** | agile-product | PRD 작성 |
+| | agile-stories | User Story 생성 |
+| | agile-jira | Jira 통합 |
+| **개발** | fullstack-frontend | Next.js 템플릿 |
+| | playwright-skill | E2E 테스트 |
+| **문서** | docx, pdf, pptx, xlsx | 문서 처리 |
+| **기타** | skill-creator | 새 스킬 생성 |
+| | workspace-transplant | 코드 이식 |
+
+---
+
+## 프로젝트 로드맵
+
+### Phase 1: 기반 구축 (1주)
+- [ ] 기존 DB 구조 분석 및 스키마 확인
+- [ ] Backend API 기본 구조 (FastAPI)
+- [ ] Frontend 기본 구조 (Next.js - fullstack-frontend 스킬)
+- [ ] Docker Compose 환경 구축
+
+### Phase 2: 핵심 기능 - 매물 API (2주)
+- [ ] 매물 조회 API (목록, 상세)
+- [ ] 매물 검색 API (필터링)
+- [ ] Frontend: 매물 목록 페이지
+- [ ] Frontend: 매물 상세 페이지
+- [ ] 지도 기반 검색 (Kakao/Naver Map API)
+
+### Phase 3: 사용자 기능 (2주)
+- [ ] 인증 시스템 (JWT)
+- [ ] 회원가입/로그인 UI
+- [ ] 즐겨찾기 API 및 UI
+- [ ] 문의 API 및 UI
+
+### Phase 4: 관리자 기능 (1주)
+- [ ] Admin 페이지 레이아웃
+- [ ] 매물 관리 (CRUD)
+- [ ] 사용자 관리
+- [ ] 기본 통계 대시보드
+
+### Phase 5: 배포 (1주)
+- [ ] Frontend: Vercel 배포
+- [ ] Backend: 클라우드 배포
+- [ ] 환경 변수 설정
+- [ ] 프로덕션 테스트
 
 **총 기간**: 7주
 
 ---
 
-## 마이그레이션 로드맵
-
-### 전략: 점진적 전환 (기존 시스템 유지)
-
-```
-v2.0 (LangGraph)              v3.0 (A2A)
-┌──────────────┐             ┌──────────────┐
-│  현재 운영    │             │  새 시스템    │
-│             │             │             │
-│  유지 관리   │  ←  비교  →  │  단계적 이전  │
-└──────────────┘             └──────────────┘
-      ↓                            ↓
-   Phase Out                   Phase In
-  (6개월 후)                   (즉시 시작)
-```
-
-### Week 1-2: Hybrid Wrapper
-
-**목표**: 기존 코드 재사용 + A2A 인터페이스
-
-```python
-# research_agent.py (NEW)
-from src.agent.research import research_node  # 기존 코드!
-
-@app.post("/tasks/send")
-async def handle_task(task):
-    # 기존 함수 호출
-    result = await research_node(state, config)
-
-    # A2A 형식으로 변환
-    return create_a2a_response(result)
-```
-
-**작업**:
-1. Research/Extraction/Reflection Agent 래퍼
-2. Coordinator 기본 구현
-3. Docker Compose로 로컬 실행
-4. 10개 회사 테스트
-
-### Week 3-4: 인프라 구축
-
-**목표**: AWS 배포
-
-```bash
-# Terraform 실행
-cd terraform
-terraform init
-terraform plan
-terraform apply
-
-# 배포 완료!
-```
-
-**작업**:
-1. VPC + ECS 클러스터
-2. Aurora Serverless v2
-3. Redis + VPC Endpoints
-4. ALB + DNS
-
-### Week 5-6: 성능 최적화
-
-**목표**: 1,000개 회사 처리 검증
-
-**테스트 시나리오**:
-```python
-# 부하 테스트
-companies = load_companies(1000)
-
-start = time.time()
-results = await coordinator.process_batch(companies)
-duration = time.time() - start
-
-print(f"처리 시간: {duration}초")  # 목표: < 120초
-print(f"성공률: {len(results)/1000*100}%")  # 목표: > 95%
-```
-
-### Week 7: 프로덕션 전환
-
-**Blue-Green 배포**:
-```
-Blue (v2.0)          Green (v3.0)
-     │                    │
-     ↓                    ↓
-   [10%] ───────────→ [90%]  트래픽 점진적 이동
-     ↓                    ↓
-   [0%]  ───────────→ [100%] 완전 전환
-```
-
----
-
 ## 참고 문서
 
-### 설계 문서
-
+### 프로젝트 문서
 | 문서 | 설명 |
 |------|------|
-| **[A2A_ARCHITECTURE.md](./A2A_ARCHITECTURE.md)** | 전체 시스템 아키텍처 (42KB) |
-| **[INFRASTRUCTURE_DESIGN.md](./INFRASTRUCTURE_DESIGN.md)** | AWS 인프라 + Terraform (29KB) |
-| **[COST_OPTIMIZATION.md](./COST_OPTIMIZATION.md)** | 비용 최적화 전략 (91% 절감) |
-| [DATA_FLOW_DESIGN.md](./DATA_FLOW_DESIGN.md) | 데이터 플로우 및 캐싱 |
-| [API_SPECIFICATION.md](./API_SPECIFICATION.md) | OpenAPI 명세 |
-| [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md) | CI/CD 파이프라인 |
+| [README.md](./README.md) | 프로젝트 개요 및 빠른 시작 |
+| [GETTING_STARTED.md](./docs/GETTING_STARTED.md) | 로컬 개발 환경 설정 |
+| [DEPLOYMENT_GUIDE.md](./docs/DEPLOYMENT_GUIDE.md) | 배포 가이드 |
 
-### 분석 문서
-
-| 문서 | 설명 |
-|------|------|
-| [GOOGLE_ADK_ANALYSIS.md](./GOOGLE_ADK_ANALYSIS.md) | Google ADK 분석 (비용 절감) |
-| [COMPARISON_ANALYSIS.md](./COMPARISON_ANALYSIS.md) | company-researcher 비교 |
-| [IMPROVEMENTS_APPLIED.md](./IMPROVEMENTS_APPLIED.md) | v2.0 개선사항 |
-| [LLM_CLOUD_PRICING_2025.md](./LLM_CLOUD_PRICING_2025.md) | LLM 가격 비교 |
-
-### 사용자 가이드
-
-| 문서 | 설명 |
-|------|------|
-| [README.md](../README.md) | 프로젝트 개요 및 빠른 시작 |
-| [README_DEEP_RESEARCH.md](./README_DEEP_RESEARCH.md) | 상세 사용 가이드 |
-| [PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md) | 프로젝트 요약 |
+### 참고 프로젝트
+- **nexus-platform**: 모노레포 구조 참고 (FastAPI + Next.js)
+- **네이버 부동산**: UI/UX 참고
+- **직방**: 검색 필터링 참고
 
 ---
 
-## 부록
+## 기술 부채 및 개선 계획
 
-### 코드 통계 (v2.0)
+### 현재 이슈
+- ⚠️ DB 스키마 미정의
+- ⚠️ API 명세 미작성
+- ⚠️ 인증/권한 미구현
 
-| 항목 | 수량 |
-|------|------|
-| Python 파일 | 15개 |
-| 코드 라인 | ~3,500 |
-| Phase 구현 | 3개 |
-| 예제 | 3개 |
-| 문서 | 15개 |
+### 향후 개선 사항
+- 🔄 GraphQL API 고려 (필요시)
+- 🔄 실시간 알림 (WebSocket)
+- 🔄 AI 기반 매물 추천
+- 🔄 모바일 앱 (React Native)
 
-### 기술 부채
+---
 
-**v2.0 알려진 이슈**:
-- ❌ 순차 처리만 가능 (배치 처리 느림)
-- ❌ 수평 확장 불가
-- ❌ 장애 시 전체 다운
-- ❌ 대규모 처리 시 메모리 부족
+## 보안 고려사항
 
-**v3.0 해결 방안**:
-- ✅ 병렬 처리 (100+ 동시)
-- ✅ 독립 확장 (에이전트별)
-- ✅ 자동 복구 (재시도 + Fallback)
-- ✅ Stateless (무제한 확장)
-
-### 보안 고려사항
-
-**v3.0 보안**:
-- ✅ VPC Private Subnet (격리)
-- ✅ Security Groups (방화벽)
-- ✅ Secrets Manager (API 키)
-- ✅ HTTPS/TLS (암호화)
-- ✅ IAM Roles (최소 권한)
-- ✅ WAF (DDoS 방어)
+### v1.0 보안 체크리스트
+- [ ] JWT 인증 구현
+- [ ] HTTPS/TLS 적용
+- [ ] SQL Injection 방어 (SQLAlchemy ORM)
+- [ ] XSS 방어 (React 기본 제공)
+- [ ] CORS 설정
+- [ ] 환경 변수 관리 (비밀키 분리)
+- [ ] Rate Limiting (API 호출 제한)
 
 ---
 
 ## 결론
 
-### v2.0 성과
+### v1.0 목표
 
-- ✅ 프로덕션 수준 안정성 달성
-- ✅ Rate limiting, 토큰 제한, 중복 제거
-- ✅ 코드 품질 향상 (프롬프트 중앙화, utils 분리)
-- ✅ 45-90초/회사 처리 속도
-
-### v3.0 기대 효과
-
-- 🚀 **480-1000x 성능 향상** (12시간 → 90초)
-- 💰 **91% 비용 절감** ($5,222 → $464/월)
-- ♾️ **무제한 확장** (에이전트별 독립 스케일)
-- 🛡️ **자동 복구** (재시도 + Fallback)
-- 🔧 **운영 효율** (독립 배포, 롤백)
+- ✅ **바이브 코딩 환경 완성**: Claude Code로 빠르게 개발
+- ✅ **MVP 출시**: 핵심 검색/조회 기능 완성
+- ✅ **확장 가능한 구조**: 점진적 기능 추가 가능
 
 ### 다음 액션
 
-1. **즉시**: Phase 1 구현 시작 (Hybrid Wrapper)
-2. **2주 후**: 인프라 배포 (Terraform)
-3. **4주 후**: 성능 테스트 (1,000 companies)
-4. **7주 후**: 프로덕션 전환 (Blue-Green)
+1. **즉시**: 구조 설계 확정 (nexus-api, nexus-frontend)
+2. **1주차**: DB 스키마 정의 및 Backend API 기본 구조
+3. **2주차**: Frontend 기본 UI 구현
+4. **3주차**: 매물 검색/조회 기능 완성
 
 ---
 
-**작성**: 2025-10-22
-**버전**: v2.0.0 (stable), v3.0.0 (design)
-**유지보수**: Development Team
+**작성**: 2025-10-28
+**버전**: v1.0.0 (초안)
+**개발자**: Claude Code Vibe Coder
 **라이선스**: MIT
 
 ---
 
-**v3.0 Ready to Implement!** 🚀
+**Ready to Build!** 🚀
